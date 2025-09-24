@@ -4,7 +4,6 @@
     "slug": "AppAvaria",
     "version": "1.0.0",
     "orientation": "portrait",
-    "entryPoint": "./frontend/App.tsx",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
@@ -14,18 +13,30 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "O app precisa acessar a câmera para tirar fotos",
+        "NSPhotoLibraryUsageDescription": "O app precisa acessar a galeria para selecionar fotos",
+        "NSPhotoLibraryAddUsageDescription": "O app precisa salvar fotos na galeria",
+        "ITSAppUsesNonExemptEncryption": false
       },
-      "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "android": {
+        "adaptiveIcon": {
+          "foregroundImage": "./assets/adaptive-icon.png",
+          "backgroundColor": "#ffffff"
+        },
+        "edgeToEdgeEnabled": true,
+        "predictiveBackGestureEnabled": false
+      },
+      "web": {
+        "favicon": "./assets/favicon.png"
+      },
+      "bundleIdentifier": "com.vliv.AppAvaria"
     },
-    "web": {
-      "favicon": "./assets/favicon.png"
+    "extra": {
+      "eas": {
+        "projectId": "70e16ea2-7b9a-4fc0-bbc4-1454bd3b2bd2"
+      }
     }
   }
 }

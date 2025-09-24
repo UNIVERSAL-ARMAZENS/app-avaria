@@ -1,10 +1,14 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, StyleSheet, Platform } from "react-native";
-import DateTimePicker, { DateTimePickerEvent } from "@react-native-community/datetimepicker";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Platform, ScrollView } 
+from "react-native";import DateTimePicker, { DateTimePickerEvent } from "@react-native-community/datetimepicker";
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../navigation/AppStack';
 import Botao from "../components/Botao";
 import { cores, estilosGlobais } from "../styles/theme";
 
-export default function RegistroScreen() {
+type Props = NativeStackScreenProps<RootStackParamList, 'Registro'>;
+
+export default function RegistroScreen({ navigation }: Props){  
   const [ativo, setAtivo] = useState("");
   const [quantidade, setQuantidade] = useState("");
 
@@ -42,125 +46,98 @@ export default function RegistroScreen() {
         break;
     }
 
-    if (Platform.OS === "android") setShowPicker(false);
+    setShowPicker(false);
   };
 
-  const handleContinuar = () => {
-    alert("Continuar pressionado!");
+   const handleContinuar = () => {
+    navigation.navigate("Fotos");
   };
 
-  const handleSalvar = () => {
+  const handleSalvar = () =>
     alert(
       `Ativo: ${ativo}\nQuantidade: ${quantidade}\n` +
       `Deslacramento: ${formatHora(horarioDeslacre)}\n` +
       `Início: ${formatHora(horarioInicio)}\nFim: ${formatHora(horarioFim)}`
     );
-  };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.titulo}>Registre a Avaria de um Ativo</Text>
+    <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="handled">
+      <View style={styles.container}>
+        <Text style={styles.titulo}>Registre a Avaria de um Ativo</Text>
 
-      <Text style={styles.label}>Ativo:</Text>
-      <TextInput
-        placeholder="Digite o ativo"
-        placeholderTextColor={cores.placeholder}
-        value={ativo}
-        onChangeText={t => setAtivo(t.replace(/[^a-zA-Z0-9]/g, ""))}
-        style={[
-            estilosGlobais.input, 
-            { 
-              width: '100%', 
-              backgroundColor: cores.inputFundo, 
-              color: 'black'  // muda a cor do texto digitado
+        <Text style={styles.label}>Ativo:</Text>
+        <TextInput
+          placeholder="Digite o ativo"
+          placeholderTextColor={cores.placeholder}
+          value={ativo}
+          onChangeText={t => setAtivo(t.replace(/[^a-zA-Z0-9]/g, ""))}
+          style={[estilosGlobais.input, { width: '100%', backgroundColor: cores.inputFundo, color: 'black' }]}
+        />
+
+        <Text style={styles.label}>Quantidade:</Text>
+        <TextInput
+          placeholder="Digite a quantidade"
+          placeholderTextColor={cores.placeholder}
+          value={quantidade}
+          onChangeText={t => setQuantidade(t.replace(/[^0-9]/g, ""))}
+          keyboardType="numeric"
+          style={[estilosGlobais.input, { width: '100%', backgroundColor: cores.inputFundo, color: 'black' }]}
+        />
+
+        <Text style={styles.label}>Horário de Deslacramento:</Text>
+        <TouchableOpacity
+          onPress={() => openPicker("deslacre")}
+          style={[estilosGlobais.input, { width: '100%', backgroundColor: cores.inputFundo }]}
+        >
+          <Text style={{ color: 'black' }}>{formatHora(horarioDeslacre)}</Text>
+        </TouchableOpacity>
+
+        <Text style={styles.label}>Horário de Início:</Text>
+        <TouchableOpacity
+          onPress={() => openPicker("inicio")}
+          style={[estilosGlobais.input, { width: '100%', backgroundColor: cores.inputFundo}]}
+        >
+          <Text style={{ color: 'black' }}>{formatHora(horarioInicio)}</Text>
+        </TouchableOpacity>
+
+        <Text style={styles.label}>Horário de Fim:</Text>
+        <TouchableOpacity
+          onPress={() => openPicker("fim")}
+          style={[estilosGlobais.input, { width: '100%', backgroundColor: cores.inputFundo}]}
+        >
+          <Text style={{ color: 'black' }}>{formatHora(horarioFim)}</Text>
+        </TouchableOpacity>
+
+        {showPicker && pickerTarget && (
+          <DateTimePicker
+            value={
+              pickerTarget === "deslacre"
+                ? horarioDeslacre
+                : pickerTarget === "inicio"
+                ? horarioInicio
+                : horarioFim
             }
-          ]}
-        />
-
-      <Text style={styles.label}>Quantidade:</Text>
-      <TextInput
-        placeholder="Digite a quantidade"
-        placeholderTextColor={cores.placeholder}
-        value={quantidade}
-        onChangeText={t => setQuantidade(t.replace(/[^0-9]/g, ""))}
-        keyboardType="numeric"
-        style={[
-              estilosGlobais.input, 
-              { 
-                width: '100%', 
-                backgroundColor: cores.inputFundo, 
-                color: 'black'  // muda a cor do texto digitado
-              }
-            ]}
+            mode="time"
+            display="spinner"
+            is24Hour
+            onChange={onChangeHora}
           />
+        )}
 
-      <Text style={styles.label}>Horário de Deslacramento:</Text>
-      <TextInput
-        value={formatHora(horarioDeslacre)}
-        onFocus={() => openPicker("deslacre")}
-        style={[
-          estilosGlobais.input, 
-          { 
-            width: '100%', 
-            backgroundColor: cores.inputFundo, 
-            color: 'black'  // muda a cor do texto digitado
-          }
-        ]}
-      />
-                
-      <Text style={styles.label}>Horário de Início:</Text>
-      <TextInput
-        value={formatHora(horarioInicio)}
-        onFocus={() => openPicker("inicio")}
-         style={[
-              estilosGlobais.input, 
-              { 
-                width: '100%', 
-                backgroundColor: cores.inputFundo, 
-                color: 'black'  // muda a cor do texto digitado
-              }
-            ]}
-          />
-
-      <Text style={styles.label}>Horário de Fim:</Text>
-      <TextInput
-        value={formatHora(horarioFim)}
-        onFocus={() => openPicker("fim")}
-         style={[
-            estilosGlobais.input, 
-            { 
-              width: '100%', 
-              backgroundColor: cores.inputFundo, 
-              color: 'black'  // muda a cor do texto digitado
-            }
-          ]}
-        />
-
-      {showPicker && pickerTarget && (
-        <DateTimePicker
-          value={
-            pickerTarget === "deslacre"
-              ? horarioDeslacre
-              : pickerTarget === "inicio"
-              ? horarioInicio
-              : horarioFim
-          }
-          mode="time"
-          is24Hour
-          display={Platform.OS === "ios" ? "spinner" : "default"}
-          onChange={onChangeHora}
-        />
-      )}
-
-      <View style={styles.botaoContainer}>
-        <Botao label="Continuar" onPress={handleContinuar} tipo="secundario"  />
-        <Botao label="Salvar" onPress={handleSalvar} />
+        <View style={styles.botaoContainer}>
+          <Botao label="Continuar" onPress={handleContinuar} tipo="secundario" />
+          <Botao label="Salvar" onPress={handleSalvar} />
+        </View>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  scrollContainer: {
+    flexGrow: 1,
+    paddingBottom: 40, // garante espaço para os botões
+  },
   container: { 
     flex: 1, 
     padding: 20, 
@@ -168,14 +145,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-start',
   },
-
   label: { 
     fontWeight: "bold", 
     marginTop: 15,
     color: cores.branco,
     alignSelf: 'flex-start',
   },
-
   titulo: {
     color: cores.branco,
     fontSize: 20,
@@ -184,7 +159,6 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     fontWeight: '700',
   },
-
   botaoContainer: { 
     flexDirection: "row", 
     justifyContent: "space-between", 
