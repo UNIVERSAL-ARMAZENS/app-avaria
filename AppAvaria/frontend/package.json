@@ -17,6 +17,8 @@
     "@types/react": "~19.1.10",
     "expo": "^54.0.10",
     "expo-image-picker": "~17.0.8",
+    "expo-print": "^15.0.7",
+    "expo-sharing": "^14.0.7",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-native": "0.81.4",
@@ -26,6 +28,7 @@
     "react-native-web": "0.21.0"
   },
   "devDependencies": {
+    "expo-module-scripts": "^5.0.7",
     "typescript": "^5.2.2"
   }
 }

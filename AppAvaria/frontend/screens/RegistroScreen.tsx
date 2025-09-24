@@ -5,11 +5,11 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/AppStack';
 import Botao from "../components/Botao";
 import { cores, estilosGlobais } from "../styles/theme";
-
+import { RegistroPendente } from '../navigation/AppStack';
 type Props = NativeStackScreenProps<RootStackParamList, 'Registro'>;
 
 export default function RegistroScreen({ navigation }: Props){  
-  const [ativo, setAtivo] = useState("");
+  const [conhecimento, setConhecimento] = useState("");
   const [quantidade, setQuantidade] = useState("");
 
   const [horarioDeslacre, setHorarioDeslacre] = useState(new Date());
@@ -50,33 +50,55 @@ export default function RegistroScreen({ navigation }: Props){
   };
 
    const handleContinuar = () => {
-    navigation.navigate("Fotos");
+    navigation.navigate('Fotos', {
+    conhecimento,
+    quantidade,
+    horarioDeslacre,
+    horarioInicio,
+    horarioFim
+  });
+};
+
+const [salvos, setSalvos] = useState<RegistroPendente[]>([]);
+
+const handleSalvar = () => {
+  const novoRegistro: RegistroPendente = {
+    id: Math.random().toString(),
+    conhecimento,
+    quantidade,
+    horarioDeslacre,
+    horarioInicio,
+    horarioFim,
+    descricao: '', // aqui você pode adicionar depois da tela de Fotos
+    imagens: [],
   };
 
-  const handleSalvar = () =>
-    alert(
-      `Ativo: ${ativo}\nQuantidade: ${quantidade}\n` +
-      `Deslacramento: ${formatHora(horarioDeslacre)}\n` +
-      `Início: ${formatHora(horarioInicio)}\nFim: ${formatHora(horarioFim)}`
-    );
+  const atualizados = [...salvos, novoRegistro];
+  setSalvos(atualizados);
+
+  navigation.navigate('Salvos', { salvos: atualizados, setSalvos: setSalvos });
+};
+
+
+
 
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="handled">
       <View style={styles.container}>
         <Text style={styles.titulo}>Registre a Avaria de um Ativo</Text>
 
-        <Text style={styles.label}>Ativo:</Text>
+        <Text style={styles.label}>Conhecimento:</Text>
         <TextInput
-          placeholder="Digite o ativo"
+          placeholder="Digite o Conhecimento"
           placeholderTextColor={cores.placeholder}
-          value={ativo}
-          onChangeText={t => setAtivo(t.replace(/[^a-zA-Z0-9]/g, ""))}
+          value={conhecimento}
+          onChangeText={t => setConhecimento(t.replace(/[^a-zA-Z0-9]/g, ""))}
           style={[estilosGlobais.input, { width: '100%', backgroundColor: cores.inputFundo, color: 'black' }]}
         />
 
         <Text style={styles.label}>Quantidade:</Text>
         <TextInput
-          placeholder="Digite a quantidade"
+          placeholder="Digite a quantidade de ocorrências"
           placeholderTextColor={cores.placeholder}
           value={quantidade}
           onChangeText={t => setQuantidade(t.replace(/[^0-9]/g, ""))}
