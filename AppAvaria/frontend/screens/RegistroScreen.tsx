@@ -49,15 +49,22 @@ export default function RegistroScreen({ navigation }: Props){
     setShowPicker(false);
   };
 
-   const handleContinuar = () => {
-    navigation.navigate('Fotos', {
+const handleContinuar = () => {
+  const id = Math.random().toString(); // gera um id temporário
+
+  navigation.navigate('Fotos', {
+    id,
     conhecimento,
     quantidade,
     horarioDeslacre,
     horarioInicio,
-    horarioFim
+    horarioFim,
+    salvos,       // mantém os registros já salvos
+    setSalvos     // permite atualizar na tela Fotos
   });
 };
+
+
 
 const [salvos, setSalvos] = useState<RegistroPendente[]>([]);
 
@@ -69,8 +76,9 @@ const handleSalvar = () => {
     horarioDeslacre,
     horarioInicio,
     horarioFim,
-    descricao: '', // aqui você pode adicionar depois da tela de Fotos
+    descricao: '',
     imagens: [],
+    ultimaTela: 'Registro',
   };
 
   const atualizados = [...salvos, novoRegistro];

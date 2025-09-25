@@ -12,15 +12,50 @@ import Botao from "../components/Botao";
 import { cores, estilosGlobais } from "../styles/theme";
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/AppStack';
-
+import Signature from 'react-native-signature-canvas';
+import { RegistroPendente } from '../navigation/AppStack';
+ 
 type Props = NativeStackScreenProps<RootStackParamList, 'Fotos'>;
 
 export default function FotosScreen({ navigation, route }: Props) {
-  const { conhecimento, quantidade, horarioDeslacre, horarioInicio, horarioFim } = route.params;
- 
+  const { conhecimento, quantidade, horarioDeslacre, horarioInicio, horarioFim, salvos, setSalvos } = route.params;
+
   const [descricao, setDescricao] = useState("");
   const [imagens, setImagens] = useState<string[]>([]);
+  const [assinatura, setAssinatura] = useState<string | null>(null);
+  const [showSignature, setShowSignature] = useState(false);
 
+  const handleSalvar = () => {
+  if (!setSalvos || !salvos) return;
+
+  const registroAtual: RegistroPendente = {
+    id: Math.random().toString(),
+    conhecimento,
+    quantidade,
+    horarioDeslacre,
+    horarioInicio,
+    horarioFim,
+    descricao,
+    imagens,
+    ultimaTela: 'Fotos',
+  };
+
+  const existe = salvos.find(r => r.id === registroAtual.id);
+  let novosSalvos: RegistroPendente[];
+
+  if (existe) {
+    novosSalvos = salvos.map(r => r.id === registroAtual.id ? registroAtual : r);
+  } else {
+    novosSalvos = [...salvos, registroAtual];
+  }
+
+  setSalvos(novosSalvos);
+
+  navigation.navigate('Salvos', { salvos: novosSalvos, setSalvos: setSalvos });
+};
+
+
+  // Seleciona imagens da galeria
   const pickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
@@ -38,6 +73,7 @@ export default function FotosScreen({ navigation, route }: Props) {
     }
   };
 
+  // Tirar foto
   const takePhoto = async () => {
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
     if (status !== "granted") {
@@ -53,37 +89,44 @@ export default function FotosScreen({ navigation, route }: Props) {
     }
   };
 
- const gerarPDF = async () => {
-  if (!descricao && imagens.length === 0) {
-    Alert.alert("Erro", "Adicione descrição ou imagens antes de finalizar");
-    return;
-  }
+  // Assinatura
+  const handleOK = (signature: string) => {
+    setAssinatura(signature); 
+    setShowSignature(false);
+  };
+  
+  const handleClear = () => {
+    setAssinatura(null);
+  };
+
+  // Gerar PDF
+  const gerarPDF = async () => {
+    if (!descricao && imagens.length === 0) {
+      Alert.alert("Erro", "Adicione descrição ou imagens antes de finalizar");
+      return;
+    }
 
 
-  // converte cada imagem para base64
-  const base64Images = await Promise.all(
-    imagens.map(async (uri) => {
-      const base64 = await FileSystem.readAsStringAsync(uri, { encoding: 'base64' });
-      return `data:image/jpeg;base64,${base64}`;
-    })
-  );
- const html = `
+    const base64Images = await Promise.all(
+      imagens.map(async (uri) => {
+        const base64 = await FileSystem.readAsStringAsync(uri, { encoding: 'base64' });
+        return `data:image/jpeg;base64,${base64}`;
+      })
+    );
+
+    const html = `
 <div style="font-family: Arial, sans-serif; color: #333;">
   <div style="text-align:center; border-bottom:2px solid #000; padding-bottom:10px; margin-bottom:20px;">
-   <img src="https://raw.githubusercontent.com/UNIVERSAL-ARMAZENS/app-avaria/main/AppAvaria/frontend/assets/logo.png" style="height:50px;" />
+    <img src="https://raw.githubusercontent.com/UNIVERSAL-ARMAZENS/app-avaria/main/AppAvaria/frontend/assets/logo.png" style="height:50px;" />
     <h1 style="margin:5px 0;">Relatório de Avaria</h1>
   </div>
 
   <h2>Informações do Registro</h2>
   <table style="width:100%; border-collapse: collapse; margin-bottom:20px;">
-  <tr>
-  <td style="padding:5px; font-weight:bold;"> Conferente:</td>
-  <td style ="padding;rpx;">teste</td>
     <tr>
       <td style="padding:5px; font-weight:bold;">Conhecimento:</td>
       <td style="padding:5px;">${conhecimento}</td>
     </tr>
-  
     <tr>
       <td style="padding:5px; font-weight:bold;">Quantidade:</td>
       <td style="padding:5px;">${quantidade}</td>
@@ -110,20 +153,21 @@ export default function FotosScreen({ navigation, route }: Props) {
     ${base64Images.map(b64 => `<img src="${b64}" style="width:200px; border-radius:5px;" />`).join('')}
   </div>
 
+  ${assinatura ? `<h2>Assinatura:</h2><img src="${assinatura}" style="width:300px; height:100px;"/>` : ''}
+
   <div style="margin-top:30px; border-top:1px solid #000; padding-top:10px; text-align:right;">
     <span>Gerado em: ${new Date().toLocaleString()}</span>
   </div>
 </div>
 `;
 
-
-  try {
-    const { uri } = await Print.printToFileAsync({ html });
-    await Sharing.shareAsync(uri);
-  } catch (err) {
-    Alert.alert("Erro ao gerar PDF", String(err));
-  }
-};
+    try {
+      const { uri } = await Print.printToFileAsync({ html });
+      await Sharing.shareAsync(uri);
+    } catch (err) {
+      Alert.alert("Erro ao gerar PDF", String(err));
+    }
+  };
 
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="handled">
@@ -152,6 +196,31 @@ export default function FotosScreen({ navigation, route }: Props) {
             <Text style={styles.botaoTexto}>Câmera</Text>
           </TouchableOpacity>
         </View>
+        <TouchableOpacity
+          onPress={() => {
+            setAssinatura(null); // limpa assinatura atual
+            setShowSignature(true); // abre canvas para refazer ou adicionar
+          }}
+          style={[styles.botaoArquivo, { alignSelf: 'flex-start', marginBottom: 20 }]}
+        >
+          <Text style={styles.botaoTexto}>
+            {assinatura ? "Refazer Assinatura" : "Adicionar Assinatura"}
+          </Text>
+        </TouchableOpacity>
+
+        {showSignature && (
+          <View style={{ width: '100%', height: 300, marginBottom: 20 }}>
+            <Signature
+              onOK={handleOK}
+              onEmpty={() => console.log("canvas vazio")}
+              descriptionText="Assine abaixo"
+              onClear={handleClear}
+              confirmText="Salvar"
+              webStyle={`.m-signature-pad {box-shadow: none; border: 1px solid #000;}`}
+            />
+          </View>
+        )}
+       
 
         <View style={styles.previewContainer}>
           {imagens.map((uri, i) => (
@@ -177,12 +246,12 @@ export default function FotosScreen({ navigation, route }: Props) {
 
         <View style={styles.botaoContainer}>
           <Botao label="Finalizar" onPress={gerarPDF} tipo="secundario" />
+          <Botao label="Salvar" onPress={handleSalvar} />
         </View>
       </View>
     </ScrollView>
   );
 }
-
 const styles = StyleSheet.create({
   scrollContainer: { flexGrow: 1, paddingBottom: 40 },
   container: { flex: 1, padding: 20, backgroundColor: cores.fundo, alignItems: 'center', justifyContent: 'flex-start' },
