@@ -59,8 +59,8 @@ const handleContinuar = () => {
     horarioDeslacre,
     horarioInicio,
     horarioFim,
-    salvos,       // mantém os registros já salvos
-    setSalvos     // permite atualizar na tela Fotos
+    salvos,       
+    setSalvos    
   });
 };
 
