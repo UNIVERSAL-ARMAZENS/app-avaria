@@ -96,7 +96,7 @@ O app permite:
 * [x] Geração automática de PDF;
 * [ ] Integração com rede corporativa;
 * [ ] Dashboard administrativo;
-* [ ] Suporte iOS.
+
 
 ---
 
@@ -108,6 +108,7 @@ O app permite:
 ##  Licença
 
 MIT License 
+
 
 
 
