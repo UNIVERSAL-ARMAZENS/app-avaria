@@ -8,8 +8,20 @@ import SalvosScreen from '../screens/SalvosScreen'
 
 export type RootStackParamList = {
   Login: undefined;
-  Registro: undefined;
+  Registro: {
+    id?: string;
+    conhecimento?: string;
+    quantidade?: string;
+    horarioDeslacre?: Date;
+    horarioInicio?: Date;
+    horarioFim?: Date;
+    descricao?: string;
+    imagens?: string[];
+    salvos?: RegistroPendente[];
+    setSalvos?: React.Dispatch<React.SetStateAction<RegistroPendente[]>>;
+  } | undefined;
   Fotos: {
+    id: string;
     conhecimento: string;
     quantidade: string;
     horarioDeslacre: Date;
@@ -17,8 +29,8 @@ export type RootStackParamList = {
     horarioFim: Date;
     descricao?: string;
     imagens?: string[];
-    salvos?: RegistroPendente[];
-    setsalvos?: React.Dispatch<React.SetStateAction<RegistroPendente[]>>;
+    salvos: RegistroPendente[];
+    setSalvos: React.Dispatch<React.SetStateAction<RegistroPendente[]>>;
   };
   Salvos: {
     salvos: RegistroPendente[];
@@ -33,9 +45,11 @@ export type RegistroPendente = {
   horarioDeslacre: Date;
   horarioInicio: Date;
   horarioFim: Date;
-  descricao: string;
-  imagens: string[];
+  descricao?: string;
+  imagens?: string[];
+  ultimaTela?: 'Registro' | 'Fotos';
 };
+
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function AppStack() {
