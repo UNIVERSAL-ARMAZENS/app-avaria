@@ -1,33 +1,43 @@
 <p align="center">
-<p align="center">
   <img src="http://www.uaga.com.br/wp-content/uploads/2020/09/Logo-site.png" alt="Logo da Empresa" width="180">
 </p>
 
+<h1 align="center">Inspeção de Avarias - Mobile App</h1>
 
 <p align="center">
-  <span style="font-size:56px; font-weight:bold;">Inspeção Avaria - Mobile App</span><br>
+  <img loading="lazy" src="http://img.shields.io/static/v1?label=STATUS&message=EM%20DESENVOLVIMENTO&color=GREEN&style=for-the-badge"/>
 </p>
-
-
-![App Banner](https://via.placeholder.com/800x200.png?text=Inspe%C3%A7%C3%A3o+de+Avarias)
-
-[![Android](https://img.shields.io/badge/Android-100%25-green)](#)
-
-[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](#)
-
-**Automatize a inspeção de avarias, registre fotos, gere relatórios em PDF e aumente a eficiência operacional da sua empresa.**
 
 ---
 
-## 🚀 Sobre o Projeto
+## 📌 Índice
 
-O **Inspeção de Avarias** é um aplicativo móvel projetado para **digitalizar e automatizar o processo de inspeção de avarias**, reduzindo **erros manuais, retrabalho e tempo de processamento**.
+- [Descrição do Projeto](#descrição-do-projeto)
+- [Status do Projeto](#status-do-projeto)
+- [Demonstração da Aplicação](#demonstração-da-aplicação)
+- [Objetivos](#objetivos)
+- [Funcionalidades](#funcionalidades)
+- [Requisitos Não Funcionais](#requisitos-não-funcionais)
+- [Arquitetura do Sistema](#arquitetura-do-sistema)
+- [Estrutura do Projeto](#📂-estrutura-do-projeto)
+- [Acesso ao Projeto](#acesso-ao-projeto)
+- [Tecnologias Utilizadas](#tecnologias-utilizadas)
+- [Licença](#licença)
+- [Conclusão](#conclusão)
 
-O app permite:
+---
 
-* Registro detalhado de avarias;
-* Upload e integração de fotos;
-* Geração automática de relatórios PDF;
+## 📝 Descrição do Projeto
+
+Automatize a inspeção de avarias, registre fotos, gere relatórios em PDF e aumente a eficiência operacional da sua empresa.
+
+[![Android](https://img.shields.io/badge/Android-100%25-green)](#)
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](#)
+
+---
+
+##  Demonstração da Aplicação
+
 
 
 ![Demo App GIF](https://via.placeholder.com/600x400.gif?text=Demo+App)
@@ -36,46 +46,48 @@ O app permite:
 
 ##  Objetivos
 
-* Padronizar o registro de avarias;
-* Garantir rastreabilidade completa das inspeções;
-* Automatizar geração de relatórios PDF;
-* Reduzir falhas humanas;
-* Suportar ações corretivas e preventivas.
+- Padronizar o registro de avarias;
+- Garantir rastreabilidade completa das inspeções;
+- Automatizar a geração de relatórios em PDF;
+- Reduzir falhas humanas no processo;
+- Suportar ações corretivas e preventivas com base nos registros.
 
 ---
 
 ##  Funcionalidades
 
-* Registro manual do tipo e descrição da avaria;
-* Registro da quantidade de itens afetados;
-* Registro do nome do conferente;
-* Registro automático de horários (deslacre, início e término);
-* Upload e integração de fotos da avaria;
-* Geração automática de PDF com todas as informações.
+- Registro manual do tipo e descrição da avaria;
+- Registro da quantidade de itens afetados;
+- Registro do nome do conferente;
+- Registro automático de horários (deslacre, início e término da inspeção);
+- Upload de fotos diretamente pelo app;
+- Geração automática de relatórios em PDF com todas as informações capturadas.
 
 ---
 
-## ⚙️ Requisitos Não Funcionais
+##  Requisitos Não Funcionais
 
-* **Desempenho:** PDF gerado em menos de 10 segundos;
-* **Segurança:** acesso restrito a usuários autorizados;
-* **Compatibilidade:** Android (últimas versões);
-* **Escalabilidade:** suporta aumento de usuários sem perda de performance.
+- **Desempenho:** PDF gerado em menos de 10 segundos;
+- **Segurança:** acesso restrito a usuários autorizados;
+- **Compatibilidade:** dispositivos Android (versões recentes);
+- **Escalabilidade:** suporte ao aumento de usuários sem perda de performance.
 
 ---
 
-## Arquitetura do Sistema
+##  Arquitetura do Sistema
 
 | Componente         | Tecnologias / Descrição                                                 |
-| ------------------ | ----------------------------------------------------------------------- |
-| **Frontend**       | React Native – interface móvel para registro de avarias e fotos         |
-| **Backend**        | Python + Flask – processamento de dados, geração de PDF e integração DB |
-| **Banco de Dados** | PostgreSQL / MySQL – registros de avarias, usuários e logs              |
+|--------------------|-------------------------------------------------------------------------|
+| **Frontend**       | React Native – Interface móvel para registro de avarias e fotos         |
+| **Backend**        | Python + Flask – Processamento de dados, geração de PDF e integração DB |
+| **Banco de Dados** | PostgreSQL / MySQL – Registro de avarias, usuários e logs               |
 | **Armazenamento**  | Servidor corporativo – PDFs e imagens                                   |
 
 ---
 
-## 📂 Estrutura do Projeto
+##  Estrutura do Projeto
+
+
 
 ```
 /inspecao-avarias
@@ -89,14 +101,6 @@ O app permite:
 
 ---
 
-## 📈 Roadmap
-
-* [x] Protótipo funcional;
-* [x] Registro de avarias e fotos;
-* [x] Geração automática de PDF;
-* [ ] Integração com rede corporativa;
-* [ ] Dashboard administrativo;
-
 
 ---
 
@@ -104,10 +108,15 @@ O app permite:
 
 
 ---
+## [ Técnicas e tecnologias utilizadas
+
+- ``JavaScritp``
+- 
 
 ##  Licença
 
 MIT License 
+
 
 
 
