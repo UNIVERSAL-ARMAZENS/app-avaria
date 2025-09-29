@@ -90,53 +90,62 @@ const handleSalvar = () => {
   navigation.navigate('Salvos', { salvos: atualizados, setSalvos: setSalvos });
 };
   return (
-    <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="handled">
-      <View style={styles.container}>
-        <Text style={styles.titulo}>Ocorrências / Avaria</Text>
+  <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="handled">
+    <View style={styles.container}>
+      <Text style={styles.titulo}>Ocorrências / Avaria</Text>
 
-        <Text style={styles.label}>Descrição das Ocorrências:</Text>
-        <TextInput
-          placeholder="Digite as Ocorrências Verificadas"
-          placeholderTextColor={cores.placeholder}
-          value={descricao}
-          onChangeText={setDescricao}
-          style={[estilosGlobais.input, styles.descricaoInput, { backgroundColor: cores.inputFundo, color: 'black' }]}
-          multiline
-        />
+      <Text style={styles.label}>Descrição das Ocorrências:</Text>
+      <TextInput
+        placeholder="Digite as Ocorrências Verificadas"
+        placeholderTextColor={cores.placeholder}
+        value={descricao}
+        onChangeText={setDescricao}
+        style={[
+          estilosGlobais.input,
+          styles.descricaoInput,
+          { backgroundColor: cores.inputFundo, color: "black" }
+        ]}
+        multiline
+      />
 
-        <Text style={styles.label}>Anexos:</Text>
-        <View style={styles.botoesArquivos}>
-          <TouchableOpacity style={styles.botaoArquivo} onPress={pickImage}>
-            <Ionicons name="image-outline" size={24} color="white" />
-            <Text style={styles.botaoTexto}>Galeria</Text>
-          </TouchableOpacity>
+      <Text style={styles.label}>Anexos:</Text>
+      <View style={styles.botoesArquivos}>
+        <TouchableOpacity style={styles.botaoArquivo} onPress={pickImage}>
+          <Ionicons name="image-outline" size={24} color="white" />
+          <Text style={styles.botaoTexto}>Galeria</Text>
+        </TouchableOpacity>
 
-          <TouchableOpacity style={styles.botaoArquivo} onPress={takePhoto}>
-            <Ionicons name="camera-outline" size={24} color="white" />
-            <Text style={styles.botaoTexto}>Câmera</Text>
-          </TouchableOpacity>
-        </View>
-       
-        <View style={styles.previewContainer}>
-          {imagens.map((uri, i) => (
-            <View key={i} style={styles.previewWrapper}>
-              <Image source={{ uri }} style={styles.previewImage} />
-              <View style={styles.previewButtons}>
-                <TouchableOpacity 
-                  style={styles.miniBotao} 
-                  onPress={() => setImagens(prev => prev.filter((_, index) => index !== i))}
-                >
-                  <Text style={styles.miniBotaoTexto}>Excluir</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          ))}
-        </View>
-        <Botao label ="Salvar" onPress={handleSalvar}/>
-        <Botao label="Finalizar" onPress={handleFinalizar} tipo="secundario" />
+        <TouchableOpacity style={styles.botaoArquivo} onPress={takePhoto}>
+          <Ionicons name="camera-outline" size={24} color="white" />
+          <Text style={styles.botaoTexto}>Câmera</Text>
+        </TouchableOpacity>
       </View>
-    </ScrollView>
-  );
+
+      <View style={styles.previewContainer}>
+        {imagens.map((uri, i) => (
+          <View key={i} style={styles.previewWrapper}>
+            <Image source={{ uri }} style={styles.previewImage} />
+            <View style={styles.previewButtons}>
+              <TouchableOpacity
+                style={styles.miniBotao}
+                onPress={() =>
+                  setImagens(prev => prev.filter((_, index) => index !== i))
+                }
+              >
+                <Text style={styles.miniBotaoTexto}>Excluir</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        ))}
+
+        <View style={styles.botaoContainer}>
+          <Botao label="Continuar" onPress={handleFinalizar} tipo="secundario" />
+          <Botao label="Salvar" onPress={handleSalvar} />
+        </View>
+      </View>
+    </View>
+  </ScrollView>
+);
 }
 
 const styles = StyleSheet.create({
@@ -154,4 +163,5 @@ const styles = StyleSheet.create({
   previewButtons: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 },
   miniBotao: { flex: 1, paddingVertical: 5, paddingHorizontal: 10, backgroundColor: cores.secundario, borderRadius: 6, alignItems: 'center', marginHorizontal: 5 },
   miniBotaoTexto: { color: '#fff', fontSize: 12, fontWeight: '600' },
+  botaoContainer: { flexDirection: "row", justifyContent: "space-between", marginTop: 30,width: '100%',},
 });
