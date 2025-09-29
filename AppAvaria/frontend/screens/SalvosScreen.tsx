@@ -1,19 +1,23 @@
-
-import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { cores } from '../styles/theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList, RegistroPendente } from '../navigation/AppStack';
-import React, { useState, useCallback } from 'react';
-import { useEffect } from 'react';
-
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Salvos'>;
 
 export default function SalvosScreen({ navigation, route }: Props) {
   const { salvos, setSalvos } = route.params;
-  const [lista, setLista] = useState<RegistroPendente[]>(salvos);
 
- const handleNovaAvaria = () => {
+  // State local para controlar a lista do FlatList
+  const [lista, setLista] = useState<RegistroPendente[]>(salvos || []);
+
+  // Sincroniza sempre que 'salvos' mudar
+  useEffect(() => {
+    setLista(salvos || []);
+  }, [salvos]);
+
+  const handleNovaAvaria = () => {
     const novoRegistro: RegistroPendente = {
       id: Date.now().toString(),
       conhecimento: '',
@@ -25,7 +29,6 @@ export default function SalvosScreen({ navigation, route }: Props) {
       imagens: [],
       ultimaTela: 'Registro',
     };
-
     navigation.navigate('Registro', { ...novoRegistro, salvos, setSalvos });
   };
 
@@ -37,23 +40,36 @@ export default function SalvosScreen({ navigation, route }: Props) {
     }
   };
 
-  const handleExcluir = (registroId: string) => {
-    const atualizados = salvos.filter(r => r.id !== registroId);
-    setSalvos(atualizados);
-    setLista(atualizados);
-  };
+ const handleExcluir = (registroId: string) => {
+  const registro = lista.find(r => r.id === registroId);
+  if (!registro) return;
 
-  useEffect(() => {
-    setLista(salvos);
-  }, [salvos]);
+  Alert.alert(
+    'Confirmar exclusão',
+    'Tem certeza que deseja excluir esta avaria?',
+    [
+      { text: 'Cancelar', style: 'cancel' },
+      { 
+        text: 'Excluir', 
+        style: 'destructive', 
+        onPress: () => {
+          const atualizados = lista.filter(r => r.id !== registroId);
+          setLista(atualizados);
+          setSalvos(atualizados);
+        } 
+      },
+    ],
+    { cancelable: true }
+  );
+};
 
 
   return (
     <View style={styles.container}>
       <Text style={styles.titulo}>Pendências de Avarias</Text>
-
+      
       <FlatList
-       data={lista}
+        data={lista}
         keyExtractor={item => item.id}
         renderItem={({ item }) => (
           <View style={styles.card}>
@@ -74,7 +90,7 @@ export default function SalvosScreen({ navigation, route }: Props) {
                 <Text style={styles.botaoTexto}>Excluir</Text>
               </TouchableOpacity>
             </View>
-       </View>
+          </View>
         )}
       />
 
