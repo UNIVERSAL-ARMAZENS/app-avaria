@@ -13,7 +13,7 @@ export default function LoginScreen({ navigation }: Props) {
 
   const handleLogin = () => {
     // Validação real depois
-    navigation.navigate('Registro');
+    navigation.navigate('Home');
   };
 
   return (

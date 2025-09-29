@@ -8,13 +8,16 @@ import { cores, estilosGlobais } from "../styles/theme";
 import { RegistroPendente } from '../navigation/AppStack';
 type Props = NativeStackScreenProps<RootStackParamList, 'Registro'>;
 
-export default function RegistroScreen({ navigation }: Props){  
+export default function RegistroScreen({ navigation, route }: Props){  
+  const { salvos = [], setSalvos = () => {} } = route.params || {};
+
   const [conhecimento, setConhecimento] = useState("");
   const [quantidade, setQuantidade] = useState("");
 
   const [horarioDeslacre, setHorarioDeslacre] = useState(new Date());
   const [horarioInicio, setHorarioInicio] = useState(new Date());
   const [horarioFim, setHorarioFim] = useState(new Date());
+
 
   const [showPicker, setShowPicker] = useState(false);
   const [pickerTarget, setPickerTarget] = useState<"deslacre" | "inicio" | "fim" | null>(null);
@@ -66,8 +69,6 @@ const handleContinuar = () => {
 
 
 
-const [salvos, setSalvos] = useState<RegistroPendente[]>([]);
-
 const handleSalvar = () => {
   const novoRegistro: RegistroPendente = {
     id: Math.random().toString(),
@@ -81,10 +82,10 @@ const handleSalvar = () => {
     ultimaTela: 'Registro',
   };
 
-  const atualizados = [...salvos, novoRegistro];
+  const atualizados = [...salvos, novoRegistro]; // ⚡ concatena com os anteriores
   setSalvos(atualizados);
 
-  navigation.navigate('Salvos', { salvos: atualizados, setSalvos: setSalvos });
+  navigation.navigate('Home', { salvos: atualizados, setSalvos });
 };
 
 
