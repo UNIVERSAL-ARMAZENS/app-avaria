@@ -22,7 +22,7 @@ export default function AssScreen({ route }: Props) {
 
   const handleOK = (sig: string) => {
     setAssinatura(sig);
-    setShowSignature(false);
+    setShowSignature(true);
   };
 
   const handleClear = () => setAssinatura(null);
@@ -103,31 +103,28 @@ export default function AssScreen({ route }: Props) {
     }
   };
 
-  return (
+ return (
     <View style={styles.container}>
-      <TouchableOpacity
-        onPress={() => { setShowSignature(true); setAssinatura(null); }}
-        style={styles.botao}
-      >
-        <Text style={styles.botaoTexto}>
-          {assinatura ? "Refazer Assinatura" : "Adicionar Assinatura"}
-        </Text>
-      </TouchableOpacity>
+      {/* Campo de assinatura aparece direto */}
+      <Signature
+        onOK={handleOK}
+        onEmpty={() => console.log("Canvas vazio")}
+        onClear={handleClear}
+        descriptionText="Assine abaixo"
+        confirmText="Salvar"
+        webStyle=".m-signature-pad {box-shadow: none; border: 1px solid #000;}"
+        style={{ width: '100%', height: 300 }}
+      />
 
-      {showSignature && (
-        <Signature
-          onOK={handleOK}
-          onEmpty={() => console.log("canvas vazio")}
-          onClear={handleClear}
-          descriptionText="Assine abaixo"
-          confirmText="Salvar"
-          webStyle=".m-signature-pad {box-shadow: none; border: 1px solid #000;}"
-          style={{ width: '100%', height: 300 }}
-        />
+      {/* Botão para refazer assinatura, aparece só se já assinou */}
+      {assinatura && (
+        <TouchableOpacity onPress={handleClear} style={styles.botao}>
+          <Text style={styles.botaoTexto}>Refazer Assinatura</Text>
+        </TouchableOpacity>
       )}
 
       <TouchableOpacity onPress={gerarPDF} style={[styles.botao, { marginTop: 20 }]}>
-        <Text style={styles.botaoTexto}>Gerar PDF</Text>
+        <Text style={styles.botaoTexto}>Finalizar</Text>
       </TouchableOpacity>
     </View>
   );

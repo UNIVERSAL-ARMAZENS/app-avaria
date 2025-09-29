@@ -156,8 +156,8 @@ const handleSalvar = () => {
         )}
 
         <View style={styles.botaoContainer}>
-          <Botao label="Continuar" onPress={handleContinuar} tipo="secundario" />
-          <Botao label="Salvar" onPress={handleSalvar} />
+          <Botao label="Salvar" onPress={handleSalvar} tipo="secundario" />
+          <Botao label="Continuar" onPress={handleContinuar}/>
         </View>
       </View>
     </ScrollView>
