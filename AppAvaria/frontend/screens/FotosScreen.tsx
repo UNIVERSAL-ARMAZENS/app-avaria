@@ -13,6 +13,8 @@ import { cores, estilosGlobais } from "../styles/theme";
 type Props = NativeStackScreenProps<RootStackParamList, 'Fotos'>;
 
 export default function FotosScreen({ navigation, route }: Props) {
+  const { salvos = [], setSalvos = () => {} } = route.params || {};
+
   const { conhecimento, quantidade, horarioDeslacre, horarioInicio, horarioFim } = route.params;
 
   const [descricao, setDescricao] = useState("");
@@ -69,7 +71,7 @@ export default function FotosScreen({ navigation, route }: Props) {
       imagens,
     });
   };
-const [salvos, setSalvos] = useState<RegistroPendente[]>([]);
+
 
 const handleSalvar = () => {
   const novoRegistro: RegistroPendente = {
@@ -87,7 +89,7 @@ const handleSalvar = () => {
   const atualizados = [...salvos, novoRegistro];
   setSalvos(atualizados);
 
-  navigation.navigate('Salvos', { salvos: atualizados, setSalvos: setSalvos });
+    navigation.navigate('Home', { salvos: atualizados, setSalvos });
 };
   return (
   <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="handled">

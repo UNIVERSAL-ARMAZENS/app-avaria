@@ -5,8 +5,15 @@ import RegistroScreen from '../screens/RegistroScreen';
 import FotosScreen from '../screens/FotosScreen'
 import SalvosScreen from '../screens/SalvosScreen'
 import AssScreen from '../screens/AssScreen'
+import HomeScreen from '../screens/HomeScreen'
+
 export type RootStackParamList = {
   Login: undefined;
+   Home: {
+  salvos: RegistroPendente[];
+  setSalvos: React.Dispatch<React.SetStateAction<RegistroPendente[]>>;
+};
+
   Registro: {
     id?: string;
     conhecimento?: string;
@@ -69,6 +76,7 @@ export default function AppStack() {
   <Stack.Screen name ="Fotos" component ={FotosScreen}/>
   <Stack.Screen name ="Salvos" component ={SalvosScreen}/>
   <Stack.Screen name ="Ass" component ={AssScreen}/>
+  <Stack.Screen name ="Home" component ={HomeScreen}/>
 </Stack.Navigator>
 
   );
