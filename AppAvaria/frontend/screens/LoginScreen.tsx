@@ -5,38 +5,33 @@ import { cores, estilosGlobais } from '../styles/theme';
 import { AuthContext } from '../services/api';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/AppStack';
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
+type UserType = {
+  username: string;
+  role: string;
+};
+
+type AuthContextType = {
+  user: UserType | null;
+  login: (usuario: string, senha: string) => Promise<void>;
+  logout: () => Promise<void>;
+};
+
 export default function LoginScreen({ navigation }: Props) {
-  const { login, user } = useContext(AuthContext); // pega user do contexto
+  const auth = useContext(AuthContext) as AuthContextType;
+  const { login } = auth;
+
   const [usuario, setUsuario] = useState('');
   const [senha, setSenha] = useState('');
 
   const handleLogin = async () => {
     try {
       await login(usuario, senha);
-
-      // pega token diretamente do AsyncStorage
-      const token = await AsyncStorage.getItem("token");
-      if (!token) throw new Error("Token não encontrado");
-
-      // testa rota protegida
-      const res = await fetch("http://10.1.12.161:5000/protected", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.msg || "Erro desconhecido");
-      }
-
-      const data = await res.json();
-      Alert.alert("Login OK", `Usuário: ${data.user.username}\nRole: ${data.user.role}`);
-      navigation.replace("Home");
+      navigation.replace('Home'); // vai direto para Home
     } catch (e: any) {
-      Alert.alert("Erro", e.message || "Erro desconhecido");
+      Alert.alert('Erro', e.message || 'Erro desconhecido');
     }
   };
 
