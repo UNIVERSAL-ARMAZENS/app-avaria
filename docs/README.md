@@ -108,7 +108,7 @@ Automatize a inspeção de avarias, registre fotos, gere relatórios em PDF e au
 
 -  Estar no diretorio do projeto backend
    ```
-   cd C:\Users\livia.brito\Desktop\app-avaria\AppAvaria\backend
+   cd app-avaria\AppAvaria\backend
    ```
 
    Ativar ambiente virtual (Windows)
@@ -130,7 +130,7 @@ Automatize a inspeção de avarias, registre fotos, gere relatórios em PDF e au
 
 4. Estar no diretório do frontend
    ```
-   cd  C:\Users\livia.brito\Desktop\app-avaria\AppAvaria\frontend
+   cd app-avaria\AppAvaria\frontend
    ```
 
 5. Instalar as dependências
@@ -153,6 +153,7 @@ Automatize a inspeção de avarias, registre fotos, gere relatórios em PDF e au
 ##  Licença
 
 MIT License 
+
 
 
 
