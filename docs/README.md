@@ -106,16 +106,54 @@ Automatize a inspeção de avarias, registre fotos, gere relatórios em PDF e au
 
 ## Acesso ao Proejeto
 
+-  Estar no diretorio do projeto backend
+   ```
+   cd C:\Users\livia.brito\Desktop\app-avaria\AppAvaria\backend
+   ```
 
+   Ativar ambiente virtual (Windows)
+   ```
+   .\env\Scripts\Activate.ps1
+   ```
+
+   (Opcional) Para desativar o ambiente virtual rode o comando: `deactivate`
+
+2. Instalar dependências.
+   ```
+   pip install -r '.\requirements.txt'
+   ```
+
+3. Rodar o app
+   ```
+   phyton.app.py
+   ```
+
+4. Estar no diretório do frontend
+   ```
+   cd  C:\Users\livia.brito\Desktop\app-avaria\AppAvaria\frontend
+   ```
+
+5. Instalar as dependências
+   ```
+   npm install
+6. Rodar o expo go
+   ```
+   npx expo star -c
 ---
-## [ Técnicas e tecnologias utilizadas
+##  Técnicas e tecnologias utilizadas
 
 - ``JavaScritp``
-- 
+- ``React Native``
+- ``Expo``
+
+- ``Python``
+- ``Flask``
+- ``SQlite``
 
 ##  Licença
 
 MIT License 
+
 
 
 
