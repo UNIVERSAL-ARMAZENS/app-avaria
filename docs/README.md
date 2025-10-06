@@ -110,33 +110,36 @@ Automatize a inspeção de avarias, registre fotos, gere relatórios em PDF e au
    ```
    cd app-avaria\AppAvaria\backend
    ```
-
-   Ativar ambiente virtual (Windows)
+1. Iniciar o ambiente virtual.
+   ```
+   python -m venv env
+   ```
+ 2.  Ativar ambiente virtual (Windows)
    ```
    .\env\Scripts\Activate.ps1
    ```
 
    (Opcional) Para desativar o ambiente virtual rode o comando: `deactivate`
 
-2. Instalar dependências.
+3. Instalar dependências.
    ```
    pip install -r '.\requirements.txt'
    ```
 
-3. Rodar o app
+4. Rodar o app
    ```
    phyton.app.py
    ```
 
-4. Estar no diretório do frontend
+5. Estar no diretório do frontend
    ```
    cd app-avaria\AppAvaria\frontend
    ```
 
-5. Instalar as dependências
+6. Instalar as dependências
    ```
    npm install
-6. Rodar o expo go
+7. Rodar o expo go
    ```
    npx expo star -c
 ---
@@ -153,6 +156,7 @@ Automatize a inspeção de avarias, registre fotos, gere relatórios em PDF e au
 ##  Licença
 
 MIT License 
+
 
 
 
