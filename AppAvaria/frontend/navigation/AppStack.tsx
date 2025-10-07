@@ -8,6 +8,8 @@ import SalvosScreen from '../screens/SalvosScreen';
 import AssScreen from '../screens/AssScreen';
 import HomeScreen from '../screens/HomeScreen';
 import { AuthContext } from '../services/api';
+import AdminCreateScreen from '../screens/AdminCreateScreen';
+import AdminListScreen from '../screens/AdminListScreen';
 
 export type RootStackParamList = {
   Login: undefined;
@@ -52,7 +54,8 @@ export type RootStackParamList = {
     descricao: string;
     imagens: string[];
   };
-  Admin: undefined;
+  AdminList: undefined;      // <-- adicionei
+  AdminCreate: undefined;   
 };
 
 export type RegistroPendente = {
@@ -75,7 +78,6 @@ type AuthContextType = {
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-const AdminScreen = () => <Text>Admin</Text>; // provisório
 
 export default function AppStack() {
   const auth = useContext(AuthContext) as AuthContextType;
@@ -83,7 +85,7 @@ export default function AppStack() {
   if (!auth) return null; // fallback seguro
   const { user, loading } = auth;
 
-  if (loading) return null; // Splash screen ou carregando
+  if (loading) return null; 
 
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
@@ -91,18 +93,23 @@ export default function AppStack() {
       <Stack.Screen name="Login" component={LoginScreen} />
 
       {/* Rotas privadas só se houver user */}
-      {user && (
+       {user && (
+    <>
+      <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Screen name="Registro" component={RegistroScreen} />
+      <Stack.Screen name="Fotos" component={FotosScreen} />
+      <Stack.Screen name="Salvos" component={SalvosScreen} />
+      <Stack.Screen name="Ass" component={AssScreen} />
+
+      {/* Admin só se role === 'admin' */}
+      {user.role === 'admin' && (
         <>
-          <Stack.Screen name="Home" component={HomeScreen} />
-          <Stack.Screen name="Registro" component={RegistroScreen} />
-          <Stack.Screen name="Fotos" component={FotosScreen} />
-          <Stack.Screen name="Salvos" component={SalvosScreen} />
-          <Stack.Screen name="Ass" component={AssScreen} />
-          {user.role === 'admin' && (
-            <Stack.Screen name="Admin" component={AdminScreen} />
-          )}
+          <Stack.Screen name="AdminList" component={AdminListScreen} />
+          <Stack.Screen name="AdminCreate" component={AdminCreateScreen} />
         </>
       )}
+    </>
+  )}
     </Stack.Navigator>
   );
 }
