@@ -128,7 +128,7 @@ Automatize a inspeção de avarias, registre fotos, gere relatórios em PDF e au
 
 4. Rodar o app
    ```
-   phyton.app.py
+   python.app.py
    ```
 
 5. Estar no diretório do frontend
@@ -141,7 +141,7 @@ Automatize a inspeção de avarias, registre fotos, gere relatórios em PDF e au
    npm install
 7. Rodar o expo go
    ```
-   npx expo star -c
+   npx expo start -c
 ---
 ##  Técnicas e tecnologias utilizadas
 
@@ -156,6 +156,7 @@ Automatize a inspeção de avarias, registre fotos, gere relatórios em PDF e au
 ##  Licença
 
 MIT License 
+
 
 
 
