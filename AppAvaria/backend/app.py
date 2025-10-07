@@ -125,6 +125,28 @@ def list_users():
     result = [{'id': u.id, 'username': u.username, 'role': u.role} for u in users]
     return jsonify(result)
 
+@app.route('/admin/edit_user/<int:user_id>', methods=['PUT'])
+@admin_required
+def edit_user(user_id):
+    """Editar um usuário."""
+    data = request.json
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({'msg': 'Usuário não encontrado'}), 404
+    if 'username' in data:
+        if User.query.filter_by(username=data['username']).first():
+            return jsonify({'msg': 'Nome de usuário já existe'}), 400
+        user.username = data['username']
+    if 'password' in data:
+        user.password = generate_password_hash(data['password'])
+    if 'role' in data:
+        user.role = data['role']
+    db.session.commit()
+    return jsonify({'msg': 'Usuário atualizado com sucesso', 'user': {
+        'id': user.id,
+        'username': user.username,
+        'role': user.role
+    }}), 200
 
 @app.route('/admin/delete_user/<int:user_id>', methods=['DELETE'])
 @admin_required
