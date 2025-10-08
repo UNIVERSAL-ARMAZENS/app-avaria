@@ -147,6 +147,18 @@ def edit_user(user_id):
         'username': user.username,
         'role': user.role
     }}), 200
+@app.route('/admin/change_password', methods=['PUT'])
+@token_required
+def change_password():
+    """Permitir que o usuário altere sua própria senha."""
+    data = request.json
+    user = request.user
+    if not check_password_hash(user.password, data['old_password']):
+        return jsonify({'msg': 'Senha antiga incorreta'}), 400
+    user.password = generate_password_hash(data['new_password'])
+    db.session.commit()
+    return jsonify({'msg': 'Senha alterada com sucesso'}), 200
+
 
 @app.route('/admin/delete_user/<int:user_id>', methods=['DELETE'])
 @admin_required
