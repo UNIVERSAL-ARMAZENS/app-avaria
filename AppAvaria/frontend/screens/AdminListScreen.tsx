@@ -69,39 +69,57 @@ export default function AdminListScreen({ navigation }: Props) {
       Alert.alert('Erro de rede');
     }
   };
+const change_password = async (id: number) => {
+  try {
+    const res = await fetch(`http://10.1.12.161:5000/admin/change_password/${id}`, {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        password: novasenha,
+      }),
+    });
+    // handle response if needed
+  } catch (err) {
+    console.error(err);
+    Alert.alert('Erro de rede');
+  }
+};
 
-  const editUser = async (id: number) => {
-    try {
-      const res = await fetch(`http://10.1.12.161:5000/admin/edit_user/${id}`, {
-        method: 'PUT',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          username: novonome,
-          password: novasenha,
-          role: novorole,
-        }),
-      });
+const editUser = async (id: number) => {
+  try {
+    const res = await fetch(`http://10.1.12.161:5000/admin/edit_user/${id}`, {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        username: novonome,
+        password: novasenha,
+        role: novorole,
+      }),
+    });
 
-      const data = await res.json();
+    const data = await res.json();
 
-      if (res.status === 200) {
-        Alert.alert('Sucesso', data.msg);
-        loadUsers(token);
-        setEditingId(null); 
-        setNovonome('');
-        setNovasenha('');
-        setNovorole('');
-      } else {
-        Alert.alert('Erro', data.msg || 'Erro ao editar usuário');
-      }
-    } catch (err) {
-      console.error(err);
-      Alert.alert('Erro de rede');
+    if (res.status === 200) {
+      Alert.alert('Sucesso', data.msg);
+      loadUsers(token);
+      setEditingId(null); 
+      setNovonome('');
+      setNovasenha('');
+      setNovorole('');
+    } else {
+      Alert.alert('Erro', data.msg || 'Erro ao editar usuário');
     }
-  };
+  } catch (err) {
+    console.error(err);
+    Alert.alert('Erro de rede');
+  }
+};
 
   return (
     <View style={styles.container}>
@@ -190,7 +208,6 @@ export default function AdminListScreen({ navigation }: Props) {
     </View>
   );
 }
-
 
 const styles = StyleSheet.create({
   container: {
