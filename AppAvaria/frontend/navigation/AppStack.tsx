@@ -10,6 +10,7 @@ import HomeScreen from '../screens/HomeScreen';
 import { AuthContext } from '../services/api';
 import AdminCreateScreen from '../screens/AdminCreateScreen';
 import AdminListScreen from '../screens/AdminListScreen';
+import ResetPasswordScreen from '../screens/ResetPasswordScreen';
 
 export type RootStackParamList = {
   Login: undefined;
@@ -54,8 +55,9 @@ export type RootStackParamList = {
     descricao: string;
     imagens: string[];
   };
-  AdminList: undefined;      // <-- adicionei
-  AdminCreate: undefined;   
+  AdminList: undefined;      
+  AdminCreate: undefined; 
+  ResetPassword : undefined;  
 };
 
 export type RegistroPendente = {
@@ -100,6 +102,8 @@ export default function AppStack() {
       <Stack.Screen name="Fotos" component={FotosScreen} />
       <Stack.Screen name="Salvos" component={SalvosScreen} />
       <Stack.Screen name="Ass" component={AssScreen} />
+      <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} />
+
 
       {/* Admin só se role === 'admin' */}
       {user.role === 'admin' && (

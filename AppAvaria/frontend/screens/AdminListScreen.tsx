@@ -1,18 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { act, useEffect, useState } from 'react';
 import {
   View,
   Text,
-  FlatList,
   TouchableOpacity,
   Alert,
   StyleSheet,
-  TextInput, // IMPORTADO AQUI
+  TextInput, 
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/AppStack';
 import { cores } from '../styles/theme';
-import { Picker } from '@react-native-picker/picker';
+import { DataTable, Button } from 'react-native-paper';
+import DropDownPicker from 'react-native-dropdown-picker';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'AdminList'>;
 type UserType = { id: number; username: string; role: string };
@@ -23,7 +23,15 @@ export default function AdminListScreen({ navigation }: Props) {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [novonome, setNovonome] = useState('');
   const [novasenha, setNovasenha] = useState('');
-  const [novorole, setNovorole] = useState('');
+const [novorole, setNovorole] = useState('');
+const [open, setOpen] = useState(false);
+const [value, setValue] = useState(novorole);
+const [items, setItems] = useState([
+  { label: 'Usuário', value: 'user' },
+  { label: 'Administrador', value: 'admin' },
+]);
+
+
 
   useEffect(() => {
     getToken();
@@ -81,7 +89,7 @@ const change_password = async (id: number) => {
         password: novasenha,
       }),
     });
-    // handle response if needed
+     
   } catch (err) {
     console.error(err);
     Alert.alert('Erro de rede');
@@ -121,146 +129,227 @@ const editUser = async (id: number) => {
   }
 };
 
-  return (
+ return (
     <View style={styles.container}>
-      <Text style={styles.titulo}>Usuários Cadastrados</Text>
+      <Text style={styles.titulo}>Painel de Usuários</Text>
 
-      <FlatList
-        data={users}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <View style={styles.userRow}>
-            {editingId === item.id ? (
-              <View style={{ flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap' }}>
-                <TextInput
-                  style={styles.input}
-                  value={novonome}
-                  onChangeText={setNovonome}
-                  placeholder="Novo Nome"
-                />
-                <TextInput
-                  style={styles.input}
-                  value={novasenha}
-                  onChangeText={setNovasenha}
-                  placeholder="Nova Senha"
-                  secureTextEntry
-                />
-                <Picker
-                  selectedValue={novorole}
-                  onValueChange={setNovorole}
-                  style={styles.picker}
-                >
-                  <Picker.Item label="User" value="user" />
-                  <Picker.Item label="Admin" value="admin" />
-                </Picker>
-                <TouchableOpacity
-                  style={[styles.botao, { marginLeft: 10 }]}
-                  onPress={() => editUser(item.id)}
-                >
-                  <Text style={styles.botao}>Salvar</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[styles.botao, { marginLeft: 10 }]}
-                  onPress={() => setEditingId(null)}
-                >
-                  <Text style={ styles.botao }>Cancelar</Text>
-                </TouchableOpacity>
-              </View>
+      <DataTable style={styles.tabela}>
+        <DataTable.Header style={{ backgroundColor: '#0d2566' }}>
+          <DataTable.Title textStyle={{ color: '#fff' }}>Usuário</DataTable.Title>
+          <DataTable.Title textStyle={{ color: '#fff' }}>Função</DataTable.Title>
+          <DataTable.Title numeric textStyle={{ color: '#fff' }}>Ações</DataTable.Title>
+        </DataTable.Header>
+        {users.length === 0 ? (
+          <DataTable.Row>
+            <DataTable.Cell>
+              <Text style={styles.emptyText}>Nenhum usuário encontrado.</Text>
+            </DataTable.Cell>
+          </DataTable.Row>
+        ) : (
+          users.map((u) => (
+            editingId === u.id ? (
+              <DataTable.Row key={u.id}>
+                <DataTable.Cell style={{ flex: 1 }} textStyle={{ color: '#fff' }}>
+                  <TextInput
+                    style={styles.input}
+                    value={novonome}
+                    onChangeText={setNovonome}
+                    placeholder="Novo nome"
+                    placeholderTextColor="#999"
+                  />
+<DropDownPicker
+  open={open}
+  value={value}
+  items={items}
+  setOpen={setOpen}
+  setValue={setValue}
+  onChangeValue={(val) => setNovorole(val ?? '')}
+  setItems={setItems}
+  containerStyle={{ height: 50 }}
+  style={{ backgroundColor: '#fff' }}
+  dropDownContainerStyle={{ backgroundColor: '#fff' }}
+  textStyle={{ color: '#000' }}
+/>
+
+                </DataTable.Cell>
+                <DataTable.Cell numeric style={{ flex: 2 }}>
+                  <View style={{ flexDirection: 'row', justifyContent: 'flex-end', gap: 5 }}>
+                    <TextInput
+                      style={[styles.input, { flex: 1, marginRight: 5 }]}
+                      value={novasenha}
+                      onChangeText={setNovasenha}
+                      placeholder="Nova senha"
+                      placeholderTextColor="#999"
+                      secureTextEntry
+                    />
+                    <Button
+                      compact
+                      mode="contained"
+                      buttonColor="#28a745"
+                      textColor="#fff"
+                      onPress={() => editUser(u.id)}
+                      style={{ marginRight: 5 }}
+                    >
+                      Salvar
+                    </Button>
+                    <Button
+                      compact
+                      mode="contained"
+                      buttonColor="#6c757d"
+                      textColor="#fff"
+                      onPress={() => setEditingId(null)}
+                    >
+                      Cancelar
+                    </Button>
+                  </View>
+                </DataTable.Cell>
+              </DataTable.Row>
             ) : (
-              <View style={styles.userRow}>
-                <Text style={styles.userText}>
-                  {item.username} ({item.role})
-                </Text>
-                <TouchableOpacity
-                  style={{ marginLeft: 10 }}
-                  onPress={() => {
-                    setEditingId(item.id);
-                    setNovonome(item.username);
-                    setNovorole(item.role);
-                  }}
-                >
-                  <Text style={styles.botao }>Editar</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={{ marginLeft: 10 }}
-                  onPress={() => deleteUser(item.id)}
-                >
-                  <Text style={ styles.botao}>Excluir</Text>
-                </TouchableOpacity>
-              </View>
-            )}
-          </View>
+              <DataTable.Row key={u.id}>
+                <DataTable.Cell textStyle={{ color: '#fff' }}>{u.username}</DataTable.Cell>
+                <DataTable.Cell textStyle={{ color: '#fff' }}>
+                  {u.role === 'admin' ? 'Administrador' : 'Usuário'}
+                </DataTable.Cell>
+                <DataTable.Cell numeric>
+                  <View style={{ flexDirection: 'row', justifyContent: 'flex-end', gap: 5 }}>
+                    <Button
+                      compact
+                      mode="contained"
+                      buttonColor="#007bff"
+                      textColor="#fff"
+                      onPress={() => {
+                        setEditingId(editingId === u.id ? null : u.id);
+                        setNovonome(u.username);
+                        setNovorole(u.role);
+                        setNovasenha('');
+                      }}
+                      style={{ marginRight: 5 }}
+                    >
+                      Editar
+                    </Button>
+                    <Button
+                      compact
+                      mode="contained"
+                      buttonColor="#dc3545"
+                      textColor="#fff"
+                      onPress={() => deleteUser(u.id)}
+                    >
+                      Excluir
+                    </Button>
+                  </View>
+                </DataTable.Cell>
+              </DataTable.Row>
+            )
+          ))
         )}
-        ListEmptyComponent={
-          <Text style={{ color: cores.branco, textAlign: 'center' }}>
-            Nenhum usuário encontrado.
-          </Text>
-        }
-        style={{ alignSelf: 'stretch', marginBottom: 20 }}
-      />
+      </DataTable>
 
-      <TouchableOpacity
-        style={[styles.botao, { marginTop: 20 }]}
+      <Button
+        mode="contained"
+        buttonColor={cores.secundario}
+        style={styles.novoUsuario}
         onPress={() => navigation.navigate('AdminCreate')}
       >
-        <Text style={styles.textoBotao}>Cadastrar Novo Usuário</Text>
-      </TouchableOpacity>
+        Novo Usuário
+      </Button>
     </View>
   );
 }
 
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: cores.fundo,
-  },
-  label: {
-    fontWeight: 'bold',
-    marginTop: 150,
-    color: cores.branco,
-    alignSelf: 'flex-start',
+    backgroundColor: '#0d2566',
+    padding: 16,
   },
   titulo: {
-    fontSize: 25,
-    height: 30,
-    fontWeight: '700',
-    color: cores.branco,
-    marginTop: 40,  
-    marginBottom: 20,
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginBottom: 16,
     textAlign: 'center',
   },
-  userRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 30,
+  tabela: {
+    backgroundColor: '#0d2566',
+    borderBottomWidth: 2,
+    borderBottomColor: '#999',
+    borderRadius: 10,
   },
-  userText: {
-    color: cores.branco,
+  salvar: {
+    backgroundColor: '#28a745',
+  },
+  cancelar: {
+    backgroundColor: '#6c757d',
+  },
+  emptyText: {
+    textAlign: 'center',
+    color: '#fff',
+    marginTop: 20,
+  },
+  coluna: {
+    fontSize: 14,
+    color: '#fff',
+    textAlign: 'center',
+  },
+  actionRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginTop: 10,
+  },
+picker: {
+ height: 50,       
+    color: '#000',    
+    backgroundColor: '#fff'
+},
+
+  card: {
+    backgroundColor: '#142850',
+    borderRadius: 10,
+    padding: 12,
+    marginVertical: 6,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  editLabel: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  input: {
+    backgroundColor: '#fff',
+    color: '#000',
+    borderRadius: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    marginBottom: 8,
+    fontSize: 16,
   },
   botao: {
-    backgroundColor: cores.secundario,
-    padding: 10,
+    paddingVertical: 6,
+    paddingHorizontal: 10,
     borderRadius: 6,
   },
+  editar: {
+    backgroundColor: '#007bff',
+  },
+  excluir: {
+    backgroundColor: '#dc3545',
+  },
+  novoUsuario: {
+    marginTop: 20,
+    backgroundColor: '#28a745',
+    borderRadius: 8,
+    paddingVertical: 12,
+    alignItems: 'center',
+  },
   textoBotao: {
-    color: cores.branco,
-    fontWeight: '600',
-    textAlign: 'center',
-  },
-   input: {
-    backgroundColor: '#fff',
-    padding: 8,
-    borderRadius: 4,
-    marginRight: 5,
-    minWidth: 100,
-    marginVertical: 5,
-  },
-  picker: {
-    height: 40,
-    width: 100,
-    marginTop: 40,
-    
+    color: '#fff',
+    fontWeight: 'bold',
   },
 });
