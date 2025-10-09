@@ -51,13 +51,12 @@ export default function ResetPasswordScreen({ navigation }: Props) {
         setIsLoading(true);
         try {
             const response = await fetch(`http://10.1.12.161:5000/admin/change_password/${user?.id}`, {
-                method: 'POST',
+                method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify({
-                    username: usuario,
                     current_password: senhaAtual,
                     new_password: novaSenha,
                 }),
@@ -85,15 +84,7 @@ export default function ResetPasswordScreen({ navigation }: Props) {
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Redefinir Senha</Text>
-            <TextInput
-                placeholder="Usuário"
-                placeholderTextColor="#A0A0A0"
-                value={usuario}
-                onChangeText={setUsuario}
-                style={styles.input}
-                autoCapitalize="none"
-                editable={!isLoading}
-            />
+            
             <TextInput
                 placeholder="Senha Atual"
                 placeholderTextColor="#A0A0A0"

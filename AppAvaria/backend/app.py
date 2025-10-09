@@ -5,6 +5,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
 from datetime import datetime, timedelta
 from functools import wraps
+from flask_migrate import Migrate
 
 app = Flask(__name__)
 CORS(app)
@@ -15,7 +16,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = "TROQUE_ESSA_CHAVE_SEGURA_AQUI"
 
 db = SQLAlchemy(app)
-
+migrate = Migrate(app, db)
 # ==========================================
 # MODELO DE USUÁRIO
 # ==========================================
@@ -23,7 +24,8 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
-    role = db.Column(db.String(20), default='user')  # admin ou user
+    role = db.Column(db.String(20), default='user') 
+    new_password = db.Column(db.String(200), nullable=True)  # Para reset de senha
 
 # ==========================================
 # DECORATORS JWT
@@ -92,7 +94,8 @@ def login():
         'user': {
             'id': user.id,
             'username': user.username,
-            'role': user.role
+            'role': user.role,
+           'new_password': user.new_password
         }
     })
 
@@ -134,7 +137,8 @@ def edit_user(user_id):
     if not user:
         return jsonify({'msg': 'Usuário não encontrado'}), 404
     if 'username' in data:
-        if User.query.filter_by(username=data['username']).first():
+        existing_user = User.query.filter_by(username=data['username']).first()
+        if existing_user and existing_user.id != user_id:
             return jsonify({'msg': 'Nome de usuário já existe'}), 400
         user.username = data['username']
     if 'password' in data:
@@ -147,17 +151,39 @@ def edit_user(user_id):
         'username': user.username,
         'role': user.role
     }}), 200
-@app.route('/admin/change_password', methods=['PUT'])
+@app.route('/admin/change_password/<int:user_id>', methods=['PUT'])
 @token_required
-def change_password():
-    """Permitir que o usuário altere sua própria senha."""
+def change_password(user_id):
+    current_user = request.user  # Usuário autenticado via token
+    target_user = User.query.get(user_id)
     data = request.json
-    user = request.user
-    if not check_password_hash(user.password, data['old_password']):
-        return jsonify({'msg': 'Senha antiga incorreta'}), 400
-    user.password = generate_password_hash(data['new_password'])
+
+    if not target_user:
+        return jsonify({'msg': 'Usuário não encontrado'}), 404
+
+    # Verificação de permissão
+    if current_user.role != 'admin' and current_user.id != user_id:
+        return jsonify({'msg': 'Acesso negado'}), 403
+
+    # Se NÃO for admin, precisa fornecer a senha atual
+    if current_user.role != 'admin':
+        if not check_password_hash(target_user.password, data.get('current_password', '')):
+            return jsonify({'msg': 'Senha atual incorreta'}), 400
+
+    # Atualiza a senha
+    if 'new_password' in data and data['new_password'].strip():
+        target_user.password = generate_password_hash(data['new_password'].strip())
+
+        # 👉 Sinaliza que o usuário precisa trocar a senha no próximo login
+        if current_user.role == 'admin':
+            target_user.new_password = True
+    else:
+        return jsonify({'msg': 'Nova senha inválida'}), 400
+
     db.session.commit()
     return jsonify({'msg': 'Senha alterada com sucesso'}), 200
+
+
 
 
 @app.route('/admin/delete_user/<int:user_id>', methods=['DELETE'])

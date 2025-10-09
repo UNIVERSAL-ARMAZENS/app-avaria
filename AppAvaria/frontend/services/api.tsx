@@ -42,16 +42,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
     })();
   }, []);
+const login = async (usuario: string, senha: string) => {
+  const res = await API.post("/login", { username: usuario, password: senha });
+  const token = res.data.token;
+  const user = res.data.user;
 
-  const login = async (usuario: string, senha: string) => {
-    const res = await API.post("/login", { username: usuario, password: senha });
-    const token = res.data.token;
-    await AsyncStorage.setItem("token", token);
-    API.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-    const decoded: UserType = jwtDecode(token);
-    setUser(decoded);
-  };
+  await AsyncStorage.setItem("token", token);
+  await AsyncStorage.setItem("user", JSON.stringify(user)); // opcional
+  API.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
+  setUser(user); 
+};
   const logout = async () => {
     await AsyncStorage.removeItem("token");
     delete API.defaults.headers.common["Authorization"];

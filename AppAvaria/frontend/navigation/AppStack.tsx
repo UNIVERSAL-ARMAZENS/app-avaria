@@ -11,6 +11,8 @@ import { AuthContext } from '../services/api';
 import AdminCreateScreen from '../screens/AdminCreateScreen';
 import AdminListScreen from '../screens/AdminListScreen';
 import ResetPasswordScreen from '../screens/ResetPasswordScreen';
+import AdminEditScreen from '../screens/AdminEditScreen';
+ 
 
 export type RootStackParamList = {
   Login: undefined;
@@ -57,6 +59,10 @@ export type RootStackParamList = {
   };
   AdminList: undefined;      
   AdminCreate: undefined; 
+  AdminEdit :  {
+    user: any;
+    onUpdate: () => Promise<void> | void;
+  };
   ResetPassword : undefined;  
 };
 
@@ -110,6 +116,7 @@ export default function AppStack() {
         <>
           <Stack.Screen name="AdminList" component={AdminListScreen} />
           <Stack.Screen name="AdminCreate" component={AdminCreateScreen} />
+          <Stack.Screen name="AdminEdit" component={AdminEditScreen} />
         </>
       )}
     </>

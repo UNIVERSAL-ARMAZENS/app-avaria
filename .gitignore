@@ -41,7 +41,7 @@ yarn-error.*
 /android
 # misc
 venv/
-
+env/
 __pychache__/
 *.pyc
 *.pyo
