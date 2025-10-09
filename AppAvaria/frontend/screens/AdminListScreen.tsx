@@ -13,6 +13,10 @@ import { RootStackParamList } from '../navigation/AppStack';
 import { cores } from '../styles/theme';
 import { DataTable, Button } from 'react-native-paper';
 import DropDownPicker from 'react-native-dropdown-picker';
+import { Ionicons } from '@expo/vector-icons'; 
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback } from 'react';
+import { Picker } from '@react-native-picker/picker';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'AdminList'>;
 type UserType = { id: number; username: string; role: string };
@@ -21,11 +25,9 @@ export default function AdminListScreen({ navigation }: Props) {
   const [users, setUsers] = useState<UserType[]>([]);
   const [token, setToken] = useState('');
   const [editingId, setEditingId] = useState<number | null>(null);
-  const [novonome, setNovonome] = useState('');
-  const [novasenha, setNovasenha] = useState('');
-const [novorole, setNovorole] = useState('');
+  
 const [open, setOpen] = useState(false);
-const [value, setValue] = useState(novorole);
+
 const [items, setItems] = useState([
   { label: 'Usuário', value: 'user' },
   { label: 'Administrador', value: 'admin' },
@@ -77,190 +79,87 @@ const [items, setItems] = useState([
       Alert.alert('Erro de rede');
     }
   };
-const change_password = async (id: number) => {
-  try {
-    const res = await fetch(`http://10.1.12.161:5000/admin/change_password/${id}`, {
-      method: 'PUT',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        password: novasenha,
-      }),
-    });
-     
-  } catch (err) {
-    console.error(err);
-    Alert.alert('Erro de rede');
-  }
-};
 
-const editUser = async (id: number) => {
-  try {
-    const res = await fetch(`http://10.1.12.161:5000/admin/edit_user/${id}`, {
-      method: 'PUT',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        username: novonome,
-        password: novasenha,
-        role: novorole,
-      }),
-    });
 
-    const data = await res.json();
 
-    if (res.status === 200) {
-      Alert.alert('Sucesso', data.msg);
-      loadUsers(token);
-      setEditingId(null); 
-      setNovonome('');
-      setNovasenha('');
-      setNovorole('');
-    } else {
-      Alert.alert('Erro', data.msg || 'Erro ao editar usuário');
-    }
-  } catch (err) {
-    console.error(err);
-    Alert.alert('Erro de rede');
-  }
-};
 
  return (
-    <View style={styles.container}>
-      <Text style={styles.titulo}>Painel de Usuários</Text>
+  <View style={styles.container}>
+    <Text style={styles.titulo}>Painel de Usuários</Text>
 
-      <DataTable style={styles.tabela}>
-        <DataTable.Header style={{ backgroundColor: '#0d2566' }}>
-          <DataTable.Title textStyle={{ color: '#fff' }}>Usuário</DataTable.Title>
-          <DataTable.Title textStyle={{ color: '#fff' }}>Função</DataTable.Title>
-          <DataTable.Title numeric textStyle={{ color: '#fff' }}>Ações</DataTable.Title>
-        </DataTable.Header>
-        {users.length === 0 ? (
-          <DataTable.Row>
+    <DataTable style={styles.tabela}>
+      <DataTable.Header style={{ backgroundColor: cores.fundo }}>
+        <DataTable.Title textStyle={{ color: '#fff' }}>Usuário</DataTable.Title>
+        <DataTable.Title textStyle={{ color: '#fff' }}>Função</DataTable.Title>
+        <DataTable.Title numeric textStyle={{ color: '#fff' }}>Ações</DataTable.Title>
+      </DataTable.Header>
+
+      {users.length === 0 ? (
+        <DataTable.Row>
+          <DataTable.Cell>
+            <Text style={styles.emptyText}>Nenhum usuário encontrado.</Text>
+          </DataTable.Cell>
+        </DataTable.Row>
+      ) : (
+        users.map((u) => (
+          <DataTable.Row key={u.id}>
             <DataTable.Cell>
-              <Text style={styles.emptyText}>Nenhum usuário encontrado.</Text>
+              <Text style={styles.coluna}>{u.username}</Text>
+            </DataTable.Cell>
+            <DataTable.Cell>
+              <Text style={styles.coluna}>{u.role}</Text>
+            </DataTable.Cell>
+            <DataTable.Cell numeric>
+              <View style={{ flexDirection: 'row' }}>
+                <Button
+                  compact
+                  mode="contained"
+                  buttonColor="#007bff"
+                  textColor="#fff"
+                  onPress={() =>
+                    navigation.navigate('AdminEdit', {
+                      user: u,
+                      onUpdate: () => loadUsers(token), 
+                    })
+                  }
+                  style={{ marginRight: 8 }}
+                >
+                  <Ionicons name="create" size={18} color="#fff" />
+                </Button>
+                <Button
+                  compact
+                  mode="contained"
+                  buttonColor="#dc3545"
+                  textColor="#fff"
+                  onPress={() => deleteUser(u.id)}
+                >
+                  <Ionicons name="trash" size={18} color="#fff" />
+                </Button>
+              </View>
             </DataTable.Cell>
           </DataTable.Row>
-        ) : (
-          users.map((u) => (
-            editingId === u.id ? (
-              <DataTable.Row key={u.id}>
-                <DataTable.Cell style={{ flex: 1 }} textStyle={{ color: '#fff' }}>
-                  <TextInput
-                    style={styles.input}
-                    value={novonome}
-                    onChangeText={setNovonome}
-                    placeholder="Novo nome"
-                    placeholderTextColor="#999"
-                  />
-<DropDownPicker
-  open={open}
-  value={value}
-  items={items}
-  setOpen={setOpen}
-  setValue={setValue}
-  onChangeValue={(val) => setNovorole(val ?? '')}
-  setItems={setItems}
-  containerStyle={{ height: 50 }}
-  style={{ backgroundColor: '#fff' }}
-  dropDownContainerStyle={{ backgroundColor: '#fff' }}
-  textStyle={{ color: '#000' }}
-/>
+        ))
+      )}
+    </DataTable>
 
-                </DataTable.Cell>
-                <DataTable.Cell numeric style={{ flex: 2 }}>
-                  <View style={{ flexDirection: 'row', justifyContent: 'flex-end', gap: 5 }}>
-                    <TextInput
-                      style={[styles.input, { flex: 1, marginRight: 5 }]}
-                      value={novasenha}
-                      onChangeText={setNovasenha}
-                      placeholder="Nova senha"
-                      placeholderTextColor="#999"
-                      secureTextEntry
-                    />
-                    <Button
-                      compact
-                      mode="contained"
-                      buttonColor="#28a745"
-                      textColor="#fff"
-                      onPress={() => editUser(u.id)}
-                      style={{ marginRight: 5 }}
-                    >
-                      Salvar
-                    </Button>
-                    <Button
-                      compact
-                      mode="contained"
-                      buttonColor="#6c757d"
-                      textColor="#fff"
-                      onPress={() => setEditingId(null)}
-                    >
-                      Cancelar
-                    </Button>
-                  </View>
-                </DataTable.Cell>
-              </DataTable.Row>
-            ) : (
-              <DataTable.Row key={u.id}>
-                <DataTable.Cell textStyle={{ color: '#fff' }}>{u.username}</DataTable.Cell>
-                <DataTable.Cell textStyle={{ color: '#fff' }}>
-                  {u.role === 'admin' ? 'Administrador' : 'Usuário'}
-                </DataTable.Cell>
-                <DataTable.Cell numeric>
-                  <View style={{ flexDirection: 'row', justifyContent: 'flex-end', gap: 5 }}>
-                    <Button
-                      compact
-                      mode="contained"
-                      buttonColor="#007bff"
-                      textColor="#fff"
-                      onPress={() => {
-                        setEditingId(editingId === u.id ? null : u.id);
-                        setNovonome(u.username);
-                        setNovorole(u.role);
-                        setNovasenha('');
-                      }}
-                      style={{ marginRight: 5 }}
-                    >
-                      Editar
-                    </Button>
-                    <Button
-                      compact
-                      mode="contained"
-                      buttonColor="#dc3545"
-                      textColor="#fff"
-                      onPress={() => deleteUser(u.id)}
-                    >
-                      Excluir
-                    </Button>
-                  </View>
-                </DataTable.Cell>
-              </DataTable.Row>
-            )
-          ))
-        )}
-      </DataTable>
-
-      <Button
-        mode="contained"
-        buttonColor={cores.secundario}
-        style={styles.novoUsuario}
-        onPress={() => navigation.navigate('AdminCreate')}
-      >
-        Novo Usuário
-      </Button>
-    </View>
-  );
+    {/* Este botão estava dentro do map — agora está fora corretamente */}
+    <Button
+      mode="contained"
+      buttonColor={cores.secundario}
+      style={styles.novoUsuario}
+      onPress={() => navigation.navigate('AdminCreate')}
+    >
+      + Novo Usuário
+    </Button>
+  </View>
+);
 }
 
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0d2566',
+    backgroundColor: cores.fundo,
     padding: 16,
   },
   titulo: {
@@ -271,7 +170,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   tabela: {
-    backgroundColor: '#0d2566',
+    backgroundColor: cores.fundo,
     borderBottomWidth: 2,
     borderBottomColor: '#999',
     borderRadius: 10,
@@ -343,7 +242,7 @@ picker: {
   },
   novoUsuario: {
     marginTop: 20,
-    backgroundColor: '#28a745',
+    backgroundColor:cores.secundario,
     borderRadius: 8,
     paddingVertical: 12,
     alignItems: 'center',

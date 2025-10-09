@@ -9,16 +9,19 @@ import { RootStackParamList } from '../navigation/AppStack';
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
 type UserType = {
+  id?: number; // or number, depending on your backend
   username: string;
   role: string;
+  new_password?: boolean;
 };
 
 type AuthContextType = {
   user: UserType | null;
-  login: (usuario: string, senha: string) => Promise<void>;
+  loading: boolean;
+  login: (usuario: string, senha: string) => Promise<UserType>;
   logout: () => Promise<void>;
+  
 };
-
 export default function LoginScreen({ navigation }: Props) {
   const auth = useContext(AuthContext) as AuthContextType;
   const { login } = auth;
@@ -26,14 +29,20 @@ export default function LoginScreen({ navigation }: Props) {
   const [usuario, setUsuario] = useState('');
   const [senha, setSenha] = useState('');
 
-  const handleLogin = async () => {
-    try {
-      await login(usuario, senha);
-      navigation.replace('Home'); // vai direto para Home
-    } catch (e: any) {
-      Alert.alert('Erro', e.message || 'Erro desconhecido');
+const handleLogin = async () => {
+  try {
+    const user = await login(usuario, senha); // <- recebe diretamente
+
+    if (user?.new_password) {
+   navigation.replace('ResetPassword', { userId: user.id }); 
+    } else {
+      navigation.replace('Home');
     }
-  };
+
+  } catch (e: any) {
+    Alert.alert('Erro', e.message || 'Erro desconhecido');
+  }
+};
 
   return (
     <KeyboardAvoidingView
