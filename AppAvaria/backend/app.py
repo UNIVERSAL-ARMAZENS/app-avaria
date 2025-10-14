@@ -25,8 +25,14 @@ class User(db.Model):
     username = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
     role = db.Column(db.String(20), default='user') 
-    new_password = db.Column(db.String(200), nullable=True)  # Para reset de senha
+    reset_password = db.Column(db.Boolean, default=False)  # Para reset de senha
 
+    def set_password(self, raw_password):
+        self.password = generate_password_hash(raw_password)
+        self.reset_password = True  # Sempre que a senha for alterada pelo admin
+
+    def check_password(self, raw_password):
+        return check_password_hash(self.password, raw_password)
 # ==========================================
 # DECORATORS JWT
 # ==========================================
@@ -74,32 +80,41 @@ def register_admin_initial():
     return jsonify({"msg": "Admin criado"}), 201
 
 
-@app.route('/login', methods=['POST'])
+
+def create_jwt_token(user_id: int):
+    payload = {
+        'id': user_id,
+        'exp': datetime.utcnow() + timedelta(hours=8) 
+    }
+    token = jwt.encode(payload, app.config['SECRET_KEY'], algorithm='HS256')
+    return token
+@app.route("/login", methods=["POST"])
 def login():
-    """Login e geração de token JWT."""
-    data = request.json
-    user = User.query.filter_by(username=data['username']).first()
-    if not user or not check_password_hash(user.password, data['password']):
-        return jsonify({'msg': 'Credenciais inválidas'}), 401
+    data = request.get_json()
+    username = data.get("username")
+    password = data.get("password")
 
-    token = jwt.encode({
-        'id': user.id,
-        'username': user.username,
-        'role': user.role,
-        'exp': datetime.utcnow() + timedelta(hours=12)
-    }, app.config['SECRET_KEY'], algorithm='HS256')
+    user = User.query.filter_by(username=username).first()
+    if not user or not user.check_password(password):
+        return jsonify({"msg": "Usuário ou senha incorretos"}), 401
 
+    # Se o admin tiver alterado a senha, força redefinição
+    if user.reset_password:
+        return jsonify({
+            "msg": "Redefinição de senha obrigatória",
+            "reset_required": True,
+            "id": user.id
+        }), 200
+    # gerar token normalmente
+    token = create_jwt_token(user.id)
     return jsonify({
-        'token': token,
-        'user': {
-            'id': user.id,
-            'username': user.username,
-            'role': user.role,
-           'new_password': user.new_password
-        }
+        "token": token,
+        "id": user.id,
+        "username": user.username,
+        "role": user.role,
+        "new_password": False
     })
 
-# ==========================================
 # ROTAS ADMIN
 # ==========================================
 @app.route('/admin/create_user', methods=['POST'])
@@ -110,7 +125,12 @@ def create_user():
     if User.query.filter_by(username=data['username']).first():
         return jsonify({'msg': 'Usuário já existe'}), 400
     hashed = generate_password_hash(data['password'])
-    user = User(username=data['username'], password=hashed, role=data.get('role', 'user'))
+    user = User(
+    username=data['username'],
+    password=generate_password_hash(data['password']),
+    role=data.get('role', 'user'),
+    reset_password=True 
+)
     db.session.add(user)
     db.session.commit()
     return jsonify({'msg': 'Usuário criado com sucesso', 'user': {
@@ -131,7 +151,6 @@ def list_users():
 @app.route('/admin/edit_user/<int:user_id>', methods=['PUT'])
 @admin_required
 def edit_user(user_id):
-    """Editar um usuário."""
     data = request.json
     user = User.query.get(user_id)
     if not user:
@@ -143,6 +162,7 @@ def edit_user(user_id):
         user.username = data['username']
     if 'password' in data:
         user.password = generate_password_hash(data['password'])
+        user.reset_password = True  # Força redefinição 
     if 'role' in data:
         user.role = data['role']
     db.session.commit()
@@ -151,37 +171,26 @@ def edit_user(user_id):
         'username': user.username,
         'role': user.role
     }}), 200
-@app.route('/admin/change_password/<int:user_id>', methods=['PUT'])
-@token_required
+
+
+@app.route("/admin/change_password/<int:user_id>", methods=["PUT"])
 def change_password(user_id):
-    current_user = request.user  # Usuário autenticado via token
-    target_user = User.query.get(user_id)
-    data = request.json
+    data = request.get_json()
+    new_password = data.get("new_password")
 
-    if not target_user:
-        return jsonify({'msg': 'Usuário não encontrado'}), 404
+    if not new_password or len(new_password) < 6:
+        return jsonify({"msg": "Senha inválida"}), 400
 
-    # Verificação de permissão
-    if current_user.role != 'admin' and current_user.id != user_id:
-        return jsonify({'msg': 'Acesso negado'}), 403
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"msg": "Usuário não encontrado"}), 404
 
-    # Se NÃO for admin, precisa fornecer a senha atual
-    if current_user.role != 'admin':
-        if not check_password_hash(target_user.password, data.get('current_password', '')):
-            return jsonify({'msg': 'Senha atual incorreta'}), 400
-
-    # Atualiza a senha
-    if 'new_password' in data and data['new_password'].strip():
-        target_user.password = generate_password_hash(data['new_password'].strip())
-
-        # 👉 Sinaliza que o usuário precisa trocar a senha no próximo login
-        if current_user.role == 'admin':
-            target_user.new_password = True
-    else:
-        return jsonify({'msg': 'Nova senha inválida'}), 400
+    user.password = generate_password_hash(new_password)
+    user.reset_password = False  # Usuário redefiniu, não precisa mais
 
     db.session.commit()
-    return jsonify({'msg': 'Senha alterada com sucesso'}), 200
+    return jsonify({"msg": "Senha redefinida com sucesso"})
+
 
 
 
