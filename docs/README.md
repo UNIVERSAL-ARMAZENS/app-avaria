@@ -13,67 +13,56 @@
 ## 📌 Índice
 
 - [Descrição do Projeto](#descrição-do-projeto)
-- [Status do Projeto](#status-do-projeto)
-- [Demonstração da Aplicação](#demonstração-da-aplicação)
 - [Objetivos](#objetivos)
-- [Funcionalidades](#funcionalidades)
+- [Requisitos Funcionais](#requisitos-funcionais)
 - [Requisitos Não Funcionais](#requisitos-não-funcionais)
 - [Arquitetura do Sistema](#arquitetura-do-sistema)
-- [Estrutura do Projeto](#📂-estrutura-do-projeto)
+- [Estrutura do Projeto](#estrutura-do-projeto)
 - [Acesso ao Projeto](#acesso-ao-projeto)
 - [Tecnologias Utilizadas](#tecnologias-utilizadas)
 - [Licença](#licença)
-- [Conclusão](#conclusão)
 
 ---
 
-## 📝 Descrição do Projeto
+##  Descrição do Projeto
 
-Automatize a inspeção de avarias, registre fotos, gere relatórios em PDF e aumente a eficiência operacional da sua empresa.
-
-[![Android](https://img.shields.io/badge/Android-100%25-green)](#)
-[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](#)
-
----
-
-##  Demonstração da Aplicação
-
-
-
-![Demo App GIF](https://via.placeholder.com/600x400.gif?text=Demo+App)
+desenvolvimento de um aplicativo móvel para automação do processo de inspeção e registro de avarias, com foco na melhoria da eficiência operacional e na redução de erros manuais. Atualmente, o processo de inspeção de avarias envolve a coleta manual de dados, o que pode resultar em falhas na documentação e no aumento do tempo necessário para a geração de relatórios. Para solucionar essas questões, o aplicativo visa digitalizar a coleta de informações, automatizar a geração de relatórios em formato PDF e integrar as imagens relacionadas à avaria.  
 
 ---
 
 ##  Objetivos
 
-- Padronizar o registro de avarias;
-- Garantir rastreabilidade completa das inspeções;
-- Automatizar a geração de relatórios em PDF;
-- Reduzir falhas humanas no processo;
-- Suportar ações corretivas e preventivas com base nos registros.
+Estabelecer o procedimento para registro e elaboração de Relatório Fotográfico de Avaria, bem como o desenvolvimento de um sistema mobile que automatize este processo, garantindo padronização, rastreabilidade, eficiência e suporte às ações corretivas e preventivas. 
+
+ 
+
+ 
+
+## Requisitos Funcionais 
+
+Reconhecimento da Avaria: O operador irá registrar a avaria manualmente, escolhendo o tipo de avaria, e descrevendo detalhadamente o problema. 
+
+Registro de Quantidade Avaliada: O operador registrará a quantidade de itens afetados. 
+
+Informações do Conferente: O operador poderá registrar o nome do conferente responsável pela inspeção. 
+
+Registro de Horários: O sistema deve registrar os horários de deslacre, início e término da inspeção.  
+
+integração de Imagens: O operador poderá registrar fotos da avaria, que serão incorporadas ao relatório gerado. 
+
+Geração de Relatório PDF: O aplicativo gerará um PDF com todas as informações inseridas, incluindo as imagens, e o salvará na rede corporativa. 
+
+ 
+
+## Requisitos Não Funcionais
+
+Desempenho: O aplicativo deve ser capaz de gerar relatórios em menos de 10 segundos. 
+
+Segurança: O sistema deve garantir que os dados armazenados sejam acessíveis apenas por usuários autorizados. 
+
+Compatibilidade: O aplicativo será compatível com as versões mais recentes do      Android  
 
 ---
-
-##  Funcionalidades
-
-- Registro manual do tipo e descrição da avaria;
-- Registro da quantidade de itens afetados;
-- Registro do nome do conferente;
-- Registro automático de horários (deslacre, início e término da inspeção);
-- Upload de fotos diretamente pelo app;
-- Geração automática de relatórios em PDF com todas as informações capturadas.
-
----
-
-##  Requisitos Não Funcionais
-
-- **Desempenho:** PDF gerado em menos de 10 segundos;
-- **Segurança:** acesso restrito a usuários autorizados;
-- **Compatibilidade:** dispositivos Android (versões recentes);
-- **Escalabilidade:** suporte ao aumento de usuários sem perda de performance.
-
----
-
 ##  Arquitetura do Sistema
 
 | Componente         | Tecnologias / Descrição                                                 |
@@ -101,10 +90,7 @@ Automatize a inspeção de avarias, registre fotos, gere relatórios em PDF e au
 
 ---
 
-
----
-
-## Acesso ao Proejeto
+## Acesso ao Projeto
 
 -  Estar no diretorio do projeto backend
    ```
@@ -116,7 +102,7 @@ Automatize a inspeção de avarias, registre fotos, gere relatórios em PDF e au
    ```
  2.  Ativar ambiente virtual (Windows)
    ```
-   .\env\Scripts\Activate.ps1
+    .\env\Scripts\Activate.ps1
    ```
 
    (Opcional) Para desativar o ambiente virtual rode o comando: `deactivate`
@@ -143,19 +129,21 @@ Automatize a inspeção de avarias, registre fotos, gere relatórios em PDF e au
    ```
    npx expo start -c
 ---
-##  Técnicas e tecnologias utilizadas
+##  Tecnologias utilizadas
 
 - ``JavaScritp``
+- ``TypeScritp``
 - ``React Native``
-- ``Expo``
-
+- ``Expo Go``
+---
 - ``Python``
 - ``Flask``
-- ``SQlite``
+- ``SQAlchemy``
 
 ##  Licença
 
 MIT License 
+
 
 
 
