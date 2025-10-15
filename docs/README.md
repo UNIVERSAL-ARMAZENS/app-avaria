@@ -6,7 +6,12 @@
 
 <p align="center">
   <img loading="lazy" src="http://img.shields.io/static/v1?label=STATUS&message=EM%20DESENVOLVIMENTO&color=GREEN&style=for-the-badge"/>
+  <img src="https://img.shields.io/badge/Python-3.13.5-blue?style=for-the-badge&logo=python">
+  <img src="https://img.shields.io/github/last-commit/aprendiz-ti-uaga/app-avaria?style=for-the-badge">
+  <img src="https://img.shields.io/badge/React-Native-red?style=for-the-badge">
+
 </p>
+
 
 ---
 
@@ -143,6 +148,7 @@ Compatibilidade: O aplicativo será compatível com as versões mais recentes do
 ##  Licença
 
 MIT License 
+
 
 
 
