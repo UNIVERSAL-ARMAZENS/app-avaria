@@ -102,8 +102,8 @@ export default function SalvosScreen({ navigation, route }: Props) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex:1, padding:20, backgroundColor: cores.fundo },
-  titulo: { fontSize:20, fontWeight:'700', color:cores.branco, marginBottom:20, textAlign:'center' },
+  container: { flex:1, padding:20, backgroundColor: cores.fundo, marginBottom: -5 },
+  titulo: {marginTop: 40, fontSize:20, fontWeight:'700', color:cores.branco, marginBottom:20, textAlign:'center' },
   card: { backgroundColor:'#fff', padding:15, borderRadius:8, marginBottom:15 },
   botoes: { flexDirection:'row', justifyContent:'flex-end', marginTop:10 },
   botao: { backgroundColor:cores.secundario, padding:10, borderRadius:6 },

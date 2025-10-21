@@ -151,7 +151,7 @@ const handleSalvar = () => {
 }
 
 const styles = StyleSheet.create({
-  scrollContainer: { flexGrow: 1, paddingBottom: 40 },
+  scrollContainer: { flexGrow: 1, paddingBottom: 40,  marginBottom: -50 },
   container: { flex: 1, padding: 20, backgroundColor: cores.fundo, alignItems: 'center', justifyContent: 'flex-start' },
   label: { fontWeight: "bold", marginTop: 15, color: cores.branco, alignSelf: 'flex-start' },
   titulo: { color: cores.branco, fontSize: 20, textAlign: 'center', marginTop: 50, marginBottom: 30, fontWeight: '700' },

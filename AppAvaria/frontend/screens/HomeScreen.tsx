@@ -14,28 +14,18 @@ export default function HomeScreen({ navigation, route }: Props) {
   const { salvos, setSalvos } = route.params || { salvos: [], setSalvos: () => {} };
   const [user, setUser] = useState<{ nome: string; role: string } | null>(null);
 
-  useEffect(() => {
-    const loadUser = async () => {
-      const token = await AsyncStorage.getItem('token');
-      if (!token) return;
+useEffect(() => {
+  const loadUser = async () => {
+    const userStr = await AsyncStorage.getItem("user");
+    if (userStr) {
+      const u = JSON.parse(userStr);
+      setUser({ nome: u.username, role: u.role });
+    }
+  };
+  loadUser();
+}, []);
 
-      try {
-        const base64Url = token.split('.')[1];
-        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        const jsonPayload = decodeURIComponent(
-          atob(base64)
-            .split('')
-            .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-            .join('')
-        );
-        const decoded = JSON.parse(jsonPayload);
-        setUser({ nome: decoded.username, role: decoded.role });
-      } catch (err) {
-        console.log('Token inválido', err);
-      }
-    };
-    loadUser();
-  }, []);
+
 
   if (!user) return null; // ou loading spinner
 

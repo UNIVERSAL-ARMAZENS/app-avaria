@@ -36,7 +36,7 @@ export default function ResetPasswordScreen({ navigation }: Props) {
     }
     , []);
     const handleResetPassword = async () => {
-        if (!usuario || !senhaAtual || !novaSenha || !confirmarSenha) {
+        if (  !novaSenha || !confirmarSenha) {
             Alert.alert('Erro', 'Por favor, preencha todos os campos.');
             return;
         }
@@ -66,7 +66,7 @@ export default function ResetPasswordScreen({ navigation }: Props) {
                 Alert.alert('Sucesso', 'Senha alterada com sucesso.', [
                     {
                         text: 'OK',
-                        onPress: () => navigation.replace('Login'),
+                        onPress: () => navigation.replace('Home'),
                     },
                 ]);
             }
@@ -85,16 +85,7 @@ export default function ResetPasswordScreen({ navigation }: Props) {
         <View style={styles.container}>
             <Text style={styles.title}>Redefinir Senha</Text>
             
-            <TextInput
-                placeholder="Senha Atual"
-                placeholderTextColor="#A0A0A0"
-                value={senhaAtual}
-                onChangeText={setSenhaAtual}
-                style={styles.input}
-                secureTextEntry
-                autoCapitalize="none"
-                editable={!isLoading}
-            />
+           
 
             <TextInput
 

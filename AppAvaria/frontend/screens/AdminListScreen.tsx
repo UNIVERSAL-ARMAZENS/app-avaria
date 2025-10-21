@@ -157,13 +157,11 @@ const [items, setItems] = useState([
 
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: cores.fundo,
-    padding: 16,
-  },
+  container: { flex:1, padding:20, backgroundColor: cores.fundo },
+
   titulo: {
     fontSize: 24,
+    marginTop: 40,
     fontWeight: 'bold',
     color: '#fff',
     marginBottom: 16,
@@ -171,6 +169,7 @@ const styles = StyleSheet.create({
   },
   tabela: {
     backgroundColor: cores.fundo,
+    marginTop: 10,
     borderBottomWidth: 2,
     borderBottomColor: '#999',
     borderRadius: 10,
@@ -230,6 +229,7 @@ picker: {
     fontSize: 16,
   },
   botao: {
+    marginTop: 10,
     paddingVertical: 6,
     paddingHorizontal: 10,
     borderRadius: 6,
@@ -241,7 +241,7 @@ picker: {
     backgroundColor: '#dc3545',
   },
   novoUsuario: {
-    marginTop: 20,
+    marginTop: 10,
     backgroundColor:cores.secundario,
     borderRadius: 8,
     paddingVertical: 12,

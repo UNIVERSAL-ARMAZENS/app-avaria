@@ -167,7 +167,8 @@ const handleSalvar = () => {
 const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,
-    paddingBottom: 40, // garante espaço para os botões
+    paddingBottom: 40,
+     marginBottom: -100
   },
   container: { 
     flex: 1, 

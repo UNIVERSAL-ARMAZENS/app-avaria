@@ -2,26 +2,13 @@ import React, { useState, useContext } from 'react';
 import { View, Text, TextInput, StyleSheet, Image, KeyboardAvoidingView, Platform, Alert } from 'react-native';
 import Botao from '../components/Botao';
 import { cores, estilosGlobais } from '../styles/theme';
-import { AuthContext } from '../services/api';
+import { AuthContext, UserType, AuthContextType } from '../services/api';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/AppStack';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
-type UserType = {
-  id?: number; // or number, depending on your backend
-  username: string;
-  role: string;
-  new_password?: boolean;
-};
 
-type AuthContextType = {
-  user: UserType | null;
-  loading: boolean;
-  login: (usuario: string, senha: string) => Promise<UserType>;
-  logout: () => Promise<void>;
-  
-};
 export default function LoginScreen({ navigation }: Props) {
   const auth = useContext(AuthContext) as AuthContextType;
   const { login } = auth;

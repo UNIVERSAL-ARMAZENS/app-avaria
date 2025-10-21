@@ -74,7 +74,7 @@ def register_admin_initial():
     if User.query.filter_by(username=data['username']).first():
         return jsonify({"msg": "Usuário já existe"}), 400
     hashed = generate_password_hash(data['password'])
-    admin = User(username=data['username'], password=hashed, role='admin')
+    admin = User(username=data['username'], password=hashed, role='admin' ,reset_password= True)
     db.session.add(admin)
     db.session.commit()
     return jsonify({"msg": "Admin criado"}), 201
@@ -84,7 +84,6 @@ def register_admin_initial():
 def create_jwt_token(user_id: int):
     payload = {
         'id': user_id,
-        'exp': datetime.utcnow() + timedelta(hours=8) 
     }
     token = jwt.encode(payload, app.config['SECRET_KEY'], algorithm='HS256')
     return token
@@ -98,23 +97,15 @@ def login():
     if not user or not user.check_password(password):
         return jsonify({"msg": "Usuário ou senha incorretos"}), 401
 
-    # Se o admin tiver alterado a senha, força redefinição
-    if user.reset_password:
-        return jsonify({
-            "msg": "Redefinição de senha obrigatória",
-            "reset_required": True,
-            "id": user.id
-        }), 200
-    # gerar token normalmente
     token = create_jwt_token(user.id)
+
     return jsonify({
         "token": token,
         "id": user.id,
         "username": user.username,
         "role": user.role,
-        "new_password": False
-    })
-
+        "new_password": user.reset_password  # <- aqui indica se precisa reset
+    }), 200
 # ROTAS ADMIN
 # ==========================================
 @app.route('/admin/create_user', methods=['POST'])
@@ -155,17 +146,22 @@ def edit_user(user_id):
     user = User.query.get(user_id)
     if not user:
         return jsonify({'msg': 'Usuário não encontrado'}), 404
+
     if 'username' in data:
         existing_user = User.query.filter_by(username=data['username']).first()
         if existing_user and existing_user.id != user_id:
             return jsonify({'msg': 'Nome de usuário já existe'}), 400
         user.username = data['username']
+
     if 'password' in data:
         user.password = generate_password_hash(data['password'])
-        user.reset_password = True  # Força redefinição 
+        user.reset_password = True  # Força redefinição no login
+
     if 'role' in data:
         user.role = data['role']
+
     db.session.commit()
+
     return jsonify({'msg': 'Usuário atualizado com sucesso', 'user': {
         'id': user.id,
         'username': user.username,

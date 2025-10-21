@@ -63,7 +63,7 @@ export type RootStackParamList = {
     user: any;
     onUpdate: () => Promise<void> | void;
   };
-  ResetPassword : undefined;  
+  ResetPassword :  { userId: number }; 
 };
 
 export type RegistroPendente = {
