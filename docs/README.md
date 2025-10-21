@@ -116,21 +116,26 @@ Compatibilidade: O aplicativo será compatível com as versões mais recentes do
    ```
    pip install -r '.\requirements.txt'
    ```
-
-4. Rodar o app
+4. Comando para criar o primeiro usuário (admin) inicial
+  ```
+   Invoke-RestMethod -Uri "http://10.1.12.161:5000/register_admin_initial" `
+  -Method POST `
+  -ContentType "application/json" `
+  -Body '{"username": "admin", "password": "1234"}'
+```
+5. Rodar o app
    ```
    python.app.py
    ```
-
-5. Estar no diretório do frontend
+   6. Estar no diretório do frontend
    ```
    cd app-avaria\AppAvaria\frontend
    ```
 
-6. Instalar as dependências
+7. Instalar as dependências
    ```
    npm install
-7. Rodar o expo go
+8. Rodar o expo go
    ```
    npx expo start -c
 ---
@@ -148,6 +153,7 @@ Compatibilidade: O aplicativo será compatível com as versões mais recentes do
 ##  Licença
 
 MIT License 
+
 
 
 
