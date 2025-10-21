@@ -54,7 +54,7 @@ export default function AdminEditScreen({ route, navigation }: Props) {
       const data = await res.json();
 
       if (res.status !== 200) {
-        Alert.alert('Erro', data.msg || 'Erro ao editar usuário');
+        Alert.alert('Erro', data.msg || 'Erro ao atualizar usuário');
         return;
       }
 
