@@ -5,6 +5,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/AppStack';
 import Botao from "../components/Botao";
 import { cores, estilosGlobais } from "../styles/theme";
+import { Alert } from "react-native";
 import { RegistroPendente } from '../navigation/AppStack';
 type Props = NativeStackScreenProps<RootStackParamList, 'Registro'>;
 
@@ -53,6 +54,10 @@ export default function RegistroScreen({ navigation, route }: Props){
   };
 
 const handleContinuar = () => {
+   if (!conhecimento || !quantidade) {
+    Alert.alert("Atenção", "Preencha todos os campos antes de continuar");
+  return;
+   }
   const id = Math.random().toString(); // gera um id temporário
 
   navigation.navigate('Fotos', {
@@ -86,8 +91,8 @@ const handleSalvar = () => {
   setSalvos(atualizados);
 
   navigation.navigate('Home', { salvos: atualizados, setSalvos });
-};
 
+}
 
 
 

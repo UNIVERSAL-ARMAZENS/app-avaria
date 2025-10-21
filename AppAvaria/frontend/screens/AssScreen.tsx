@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import Signature from "react-native-signature-canvas";
 import * as Print from "expo-print";
@@ -6,12 +6,13 @@ import * as Sharing from "expo-sharing";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../navigation/AppStack";
 import { cores } from "../styles/theme";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Ass'>;
 
 export default function AssScreen({ route }: Props) {
   const { conhecimento, quantidade, horarioDeslacre, horarioInicio, horarioFim, descricao, imagens } = route.params;
-
+  const [user, setUser] = useState<{ nome: string; role: string } | null>(null);
   // Converte para Date
   const horarioDeslacreDate = new Date(horarioDeslacre);
   const horarioInicioDate = new Date(horarioInicio);
@@ -24,12 +25,21 @@ export default function AssScreen({ route }: Props) {
     setAssinatura(sig);
     setShowSignature(true);
   };
-
+useEffect(() => {
+  const loadUser = async () => {
+    const userStr = await AsyncStorage.getItem("user");
+    if (userStr) {
+      const u = JSON.parse(userStr);
+      setUser({ nome: u.username, role: u.role });
+    }
+  };
+  loadUser();
+}, []);
   const handleClear = () => setAssinatura(null);
 
   const gerarPDF = async () => {
-    if (!descricao && imagens.length === 0) {
-      Alert.alert("Erro", "Adicione descrição ou imagens antes de finalizar");
+    if (!Signature) {
+      Alert.alert("Erro", "Adicione sua Assinatura para finalizar");
       return;
     }
 
@@ -57,6 +67,11 @@ export default function AssScreen({ route }: Props) {
 
   <h2>Informações do Registro</h2>
   <table style="width:100%; border-collapse: collapse; margin-bottom:20px;">
+  <tr>
+      <td style="padding:5px; font-weight:bold;">Conferente:</td>
+      <td style="padding:5px;">${user.nome}</td>
+    </tr>
+  
     <tr>
       <td style="padding:5px; font-weight:bold;">Conhecimento:</td>
       <td style="padding:5px;">${conhecimento}</td>
@@ -96,15 +111,18 @@ export default function AssScreen({ route }: Props) {
 `;
 
     try {
+      
       const { uri } = await Print.printToFileAsync({ html });
       await Sharing.shareAsync(uri);
     } catch (err) {
       Alert.alert("Erro ao gerar PDF", String(err));
+      
     }
   };
 
  return (
     <View style={styles.container}>
+      
       {/* Campo de assinatura aparece direto */}
       <Signature
         onOK={handleOK}
