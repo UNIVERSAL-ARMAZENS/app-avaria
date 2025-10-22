@@ -11,10 +11,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 type Props = NativeStackScreenProps<RootStackParamList, 'Ass'>;
 
 export default function AssScreen({ route }: Props) {
-  const { conhecimento, quantidade, horarioDeslacre, horarioInicio, horarioFim, descricao, imagens } = route.params;
-  const [user, setUser] = useState<{ nome: string; role: string } | null>(null);
+  const { conhecimento, quantidade, horarioDeslacre, horarioInicio, horarioFim, descricao, imagens } = route.params; // RETORNA OS PARAMETROS
+  const [user, setUser] = useState<{ nome: string; role: string } | null>(null); 
   // Converte para Date
-  const horarioDeslacreDate = new Date(horarioDeslacre);
+  const horarioDeslacreDate = new Date(horarioDeslacre); 
   const horarioInicioDate = new Date(horarioInicio);
   const horarioFimDate = new Date(horarioFim);
 
@@ -23,7 +23,7 @@ export default function AssScreen({ route }: Props) {
 
   const handleOK = (sig: string) => {
     setAssinatura(sig);
-    setShowSignature(true);
+    setShowSignature(true); 
   };
 useEffect(() => {
   const loadUser = async () => {

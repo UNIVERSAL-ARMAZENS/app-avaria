@@ -19,30 +19,30 @@ import { useCallback } from 'react';
 import { Picker } from '@react-native-picker/picker';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'AdminList'>;
-type UserType = { id: number; username: string; role: string };
+type UserType = { id: number; username: string; role: string }; //  Tipo do usuário
 
 export default function AdminListScreen({ navigation }: Props) {
-  const [users, setUsers] = useState<UserType[]>([]);
+  const [users, setUsers] = useState<UserType[]>([]); // Lista de usuários
   const [token, setToken] = useState('');
-  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editingId, setEditingId] = useState<number | null>(null); // ID do usuário sendo editado
   
-const [open, setOpen] = useState(false);
+const [open, setOpen] = useState(false); // Estado para controlar o Picker
 
 const [items, setItems] = useState([
   { label: 'Usuário', value: 'user' },
   { label: 'Administrador', value: 'admin' },
-]);
+]); // Opções do Picker
 
 
 
   useEffect(() => {
     getToken();
-  }, []);
+  }, []);// Pega o token ao montar o componente
 
   const getToken = async () => {
-    const t = await AsyncStorage.getItem('token');
+    const t = await AsyncStorage.getItem('token');// Pega o token do AsyncStorage
     if (!t) {
-      Alert.alert('Erro', 'Token ausente');
+      Alert.alert('Erro', 'Token ausente'); // Verifica se o token existe
       navigation.replace('Login');
       return;
     }
@@ -52,8 +52,8 @@ const [items, setItems] = useState([
 
   const loadUsers = async (t: string) => {
     try {
-      const res = await fetch('http://10.1.12.161:5000/admin/users', {
-        headers: { Authorization: `Bearer ${t}` },
+      const res = await fetch('http://10.1.12.161:5000/admin/users', { // Requisição para pegar a lista de usuários
+        headers: { Authorization: `Bearer ${t}` }, // Usa o token para autenticação
       });
       if (res.status === 200) setUsers(await res.json());
       else Alert.alert('Erro', 'Falha ao carregar lista de usuários.');
@@ -64,7 +64,7 @@ const [items, setItems] = useState([
 
   const deleteUser = async (id: number) => {
     try {
-      const res = await fetch(`http://10.1.12.161:5000/admin/delete_user/${id}`, {
+      const res = await fetch(`http://10.1.12.161:5000/admin/delete_user/${id}`, { // Requisição para deletar o usuário
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -78,7 +78,7 @@ const [items, setItems] = useState([
       console.error(err);
       Alert.alert('Erro de rede');
     }
-  };
+  }; // Função para deletar o usuário
 
 
 
@@ -88,6 +88,7 @@ const [items, setItems] = useState([
     <Text style={styles.titulo}>Painel de Usuários</Text>
 
     <DataTable style={styles.tabela}>
+      
       <DataTable.Header style={{ backgroundColor: cores.fundo }}>
         <DataTable.Title textStyle={{ color: '#fff' }}>Usuário</DataTable.Title>
         <DataTable.Title textStyle={{ color: '#fff' }}>Função</DataTable.Title>
@@ -168,7 +169,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   tabela: {
-    backgroundColor: cores.fundo,
+    backgroundColor: cores.card,
     marginTop: 10,
     borderBottomWidth: 2,
     borderBottomColor: '#999',
@@ -202,7 +203,7 @@ picker: {
 },
 
   card: {
-    backgroundColor: '#142850',
+    backgroundColor: cores.card,
     borderRadius: 10,
     padding: 12,
     marginVertical: 6,
