@@ -16,7 +16,7 @@ import { cores } from '../styles/theme';
 type Props = NativeStackScreenProps<RootStackParamList, 'AdminEdit'>;
 
 export default function AdminEditScreen({ route, navigation }: Props) {
-  const { user, onUpdate } = route.params;
+  const { user, onUpdate } = route.params; // Pega o usuário e a função de atualização das props
 
   const [token, setToken] = useState('');
   const [novonome, setNovonome] = useState(user.username);
@@ -25,33 +25,33 @@ export default function AdminEditScreen({ route, navigation }: Props) {
 
   useEffect(() => {
     getToken();
-  }, []);
+  }, []); // Pega o token ao montar o componente
 
   const getToken = async () => {
-    const t = await AsyncStorage.getItem('token');
+    const t = await AsyncStorage.getItem('token'); // Pega o token do AsyncStorage
     if (!t) {
       Alert.alert('Erro', 'Token ausente');
       navigation.replace('Login');
       return;
     }
-    setToken(t);
+    setToken(t); // Salva o token no estado
   };
 
   const editUser = async () => {
     try {
-      const body: any = { username: novonome };
-      if (novasenha.trim() !== '') body.password = novasenha;
+      const body: any = { username: novonome }; // Corpo da requisição
+      if (novasenha.trim() !== '') body.password = novasenha; // Adiciona a senha somente se foi preenchida
 
-      const res = await fetch(`http://10.1.12.161:5000/admin/edit_user/${user.id}`, {
+      const res = await fetch(`http://10.1.12.161:5000/admin/edit_user/${user.id}`, { //  Requisição para editar o usuário
         method: 'PUT',
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
-        },
+        }, 
         body: JSON.stringify(body),
       });
 
-      const data = await res.json();
+      const data = await res.json(); // Pega a resposta em JSON
 
       if (res.status !== 200) {
         Alert.alert('Erro', data.msg || 'Erro ao atualizar usuário');
@@ -66,7 +66,7 @@ export default function AdminEditScreen({ route, navigation }: Props) {
     }
   };
 
-  return (
+  return ( // Tela de edição do usuário
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.titulo}>Editar Usuário</Text>
 
