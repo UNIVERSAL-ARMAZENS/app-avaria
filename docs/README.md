@@ -2,10 +2,9 @@
   <img src="http://www.uaga.com.br/wp-content/uploads/2020/09/Logo-site.png" alt="Logo da Empresa" width="180">
 </p>
 
-<h1 align="center">Inspeção de Avarias - Mobile App</h1>
+<h1 align="center">Inspeção Fotografica de Avarias - Mobile App</h1>
 
 <p align="center">
-  <img loading="lazy" src="http://img.shields.io/static/v1?label=STATUS&message=EM%20DESENVOLVIMENTO&color=GREEN&style=for-the-badge"/>
   <img src="https://img.shields.io/badge/Python-3.13.5-blue?style=for-the-badge&logo=python">
   <img src="https://img.shields.io/github/last-commit/aprendiz-ti-uaga/app-avaria?style=for-the-badge">
   <img src="https://img.shields.io/badge/React-Native-red?style=for-the-badge">
@@ -31,42 +30,32 @@
 
 ##  Descrição do Projeto
 
-desenvolvimento de um aplicativo móvel para automação do processo de inspeção e registro de avarias, com foco na melhoria da eficiência operacional e na redução de erros manuais. Atualmente, o processo de inspeção de avarias envolve a coleta manual de dados, o que pode resultar em falhas na documentação e no aumento do tempo necessário para a geração de relatórios. Para solucionar essas questões, o aplicativo visa digitalizar a coleta de informações, automatizar a geração de relatórios em formato PDF e integrar as imagens relacionadas à avaria.  
+desenvolvimento de um aplicativo móvel para automação do processo de inspeção e registro de avarias, o aplicativo visa digitalizar a coleta de informações, automatizar a geração de relatórios em formato PDF e integrar as imagens relacionadas à avaria.  
 
 ---
 
 ##  Objetivos
 
-Estabelecer o procedimento para registro e elaboração de Relatório Fotográfico de Avaria, bem como o desenvolvimento de um sistema mobile que automatize este processo, garantindo padronização, rastreabilidade, eficiência e suporte às ações corretivas e preventivas. 
+Estabelecer o procedimento para registro e elaboração de Relatório Fotográfico de Avaria, bem como o desenvolvimento de um sistema mobile que automatize este processo, garantindo padronização e suporte às ações corretivas e preventivas. 
 
  
 
  
 
 ## Requisitos Funcionais 
+ Login de usuario cadastrado pelo administrador : O  conferente deve colocar sua credencias cadastradas pelo admin
+ 
+Reconhecimento da Avaria: O conferente irá registrar a avaria manualmente, escrevendo o conhecimento da avaria inspecionada, 
 
-Reconhecimento da Avaria: O operador irá registrar a avaria manualmente, escolhendo o tipo de avaria, e descrevendo detalhadamente o problema. 
+Registro de Quantidade Avaliada: O conferente registrará a quantidade de itens afetados. 
 
-Registro de Quantidade Avaliada: O operador registrará a quantidade de itens afetados. 
+Registro de Horários: O Conferente deve selecionar os horários de deslacre, início e término da inspeção.  
 
-Informações do Conferente: O operador poderá registrar o nome do conferente responsável pela inspeção. 
-
-Registro de Horários: O sistema deve registrar os horários de deslacre, início e término da inspeção.  
-
-integração de Imagens: O operador poderá registrar fotos da avaria, que serão incorporadas ao relatório gerado. 
+integração de Imagens: o Conferente deve descrever detalhadamente o problema.'(a desenvolver uma opção melhor para facilitar na parte de descrição).  O operador poderá registrar fotos da avaria, que serão incorporadas ao relatório gerado. 
 
 Geração de Relatório PDF: O aplicativo gerará um PDF com todas as informações inseridas, incluindo as imagens, e o salvará na rede corporativa. 
 
  
-
-## Requisitos Não Funcionais
-
-Desempenho: O aplicativo deve ser capaz de gerar relatórios em menos de 10 segundos. 
-
-Segurança: O sistema deve garantir que os dados armazenados sejam acessíveis apenas por usuários autorizados. 
-
-Compatibilidade: O aplicativo será compatível com as versões mais recentes do      Android  
-
 ---
 ##  Arquitetura do Sistema
 
@@ -153,6 +142,7 @@ Compatibilidade: O aplicativo será compatível com as versões mais recentes do
 ##  Licença
 
 MIT License 
+
 
 
 
